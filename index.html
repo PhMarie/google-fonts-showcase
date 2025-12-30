@@ -235,6 +235,19 @@
                     clearSearchBtn.style.display = fontSearch.value.length > 0 ? 'block' : 'none';
                 }
             });
+
+            // Click on search box - position cursor after category name
+            fontSearch.addEventListener('click', () => {
+                // Get the current category name from the counter
+                const categoryNameElement = document.getElementById('category-name');
+                if (categoryNameElement && fontSearch.value === '') {
+                    const categoryName = categoryNameElement.textContent;
+                    // Set search value to category name with colon and space
+                    fontSearch.value = categoryName + ': ';
+                    // Position cursor at the end
+                    fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
+                }
+            });
             
             // Clear search button functionality
             const clearSearchBtn = document.getElementById('clear-search');

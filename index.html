@@ -683,7 +683,10 @@
                     favoritesBtn.style.display = 'inline-block'; // Ensure it's visible
                 }
             }
-            const searchTerm = fontSearch.value.toLowerCase();
+            // Extract actual search term (remove category prefix if present)
+            const fullSearchValue = fontSearch.value;
+            const colonIndex = fullSearchValue.indexOf(':');
+            const searchTerm = colonIndex !== -1 ? fullSearchValue.substring(colonIndex + 1).trim().toLowerCase() : fullSearchValue.toLowerCase();
 
             // Show loading state
             fontsContainer.innerHTML = `<div class="loading">Loading fonts...</div>`;

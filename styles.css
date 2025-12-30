@@ -363,7 +363,7 @@ h1 {
 .font-number {
     position: absolute !important;
     bottom: 10px !important;
-    right: 10px !important;
+    left: 10px !important;
     font-weight: bold;
     color: #ccc; /* Lighter grey */
     font-size: 14px;
@@ -545,11 +545,58 @@ h1 {
 }
 
 .font-preview {
-    font-size: 24px;
+    font-size: 16px;
     line-height: 1.4;
     color: #555;
     margin-bottom: 15px;
     min-height: 80px;
+    transition: font-size 0.2s;
+}
+
+.card-size-increase-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    opacity: 0.7;
+}
+
+.card-size-increase-btn:hover {
+    color: #4285F4;
+    background-color: rgba(66, 133, 244, 0.1);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.card-size-increase-btn:active {
+    transform: scale(0.95);
+}
+
+.card-size-increase-btn.active {
+    color: #4285F4;
+    background-color: rgba(66, 133, 244, 0.2);
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.dark-theme .card-size-increase-btn {
+    color: #777;
+}
+
+.dark-theme .card-size-increase-btn:hover {
+    color: #8ab4f8;
+    background-color: rgba(90, 123, 196, 0.2);
 }
 
 /* Fallback font indicator - purple color */

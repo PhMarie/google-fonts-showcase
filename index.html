@@ -33,13 +33,14 @@
 
             <div class="font-categories">
                 <button class="category-btn active" data-category="all">All Fonts</button>
-                <button class="category-btn" data-category="caps">CAPS</button>
                 <button class="category-btn" data-category="sans-serif">Sans Serif</button>
                 <button class="category-btn" data-category="serif">Serif</button>
+                <button class="category-btn" data-category="display">Display</button>
                 <button class="category-btn" data-category="cursive">Cursive</button>
                 <button class="category-btn" data-category="monospace">Monospace</button>
-                <button class="category-btn" data-category="favorites">❤️ Favorites</button>
-                <button class="theme-toggle-btn" id="theme-toggle">🌓 Dark Theme</button>
+                <button class="category-btn" data-category="caps">CAPS</button>
+                <button class="category-btn" data-category="favorites">❤️ Favs</button>
+                <button class="theme-toggle-btn" id="theme-toggle">🌓</button>
             </div>
 
             <div class="preview-text-input">
@@ -261,11 +262,12 @@
             document.addEventListener('click', (e) => {
                 const fontCard = e.target.closest('.font-card');
                 if (fontCard) {
-                    // Don't change preview font if clicking on Copy CSS button or View on Google button
+                    // Don't change preview font if clicking on Copy CSS button, View on Google button, or card size button
                     const copyCSSButton = e.target.closest('.btn-primary');
                     const viewGoogleButton = e.target.closest('.btn-secondary');
+                    const cardSizeButton = e.target.closest('.card-size-increase-btn');
                     
-                    if (!copyCSSButton && !viewGoogleButton) {
+                    if (!copyCSSButton && !viewGoogleButton && !cardSizeButton) {
                         const fontName = fontCard.dataset.fontName;
                         const fontCategory = fontCard.dataset.fontCategory;
                         changePreviewFont(fontName, fontCategory);
@@ -345,8 +347,8 @@
             isDarkTheme = !isDarkTheme;
             document.body.classList.toggle('dark-theme');
             
-            // Update button text based on current theme
-            themeToggleBtn.textContent = isDarkTheme ? '☀️ Light Theme' : '🌓 Dark Theme';
+            // Update button icon based on current theme
+            themeToggleBtn.textContent = isDarkTheme ? '☀️' : '🌓';
             
             // Save theme preference to localStorage
             localStorage.setItem('themePreference', isDarkTheme ? 'dark' : 'light');
@@ -357,7 +359,7 @@
             if (savedTheme === 'dark') {
                 isDarkTheme = true;
                 document.body.classList.add('dark-theme');
-                themeToggleBtn.textContent = '☀️ Light Theme';
+                themeToggleBtn.textContent = '☀️';
             }
         }
 
@@ -370,11 +372,12 @@
                 
                 // Update the preview text styling to show it's using the selected font
                 previewTextElement.style.fontFamily = `'${fontName}', ${getFallbackFont(fontCategory)}`;
-                previewTextElement.style.fontSize = currentFontSize + 'px';
+                previewTextElement.style.fontSize = fontSizeSteps[currentSizeIndex] + 'px';
                 previewTextElement.style.fontWeight = 'normal';
                 
-                // Reset size tracking to default
+                // Reset size tracking to default (16px)
                 currentSizeIndex = 0;
+                currentFontSize = fontSizeSteps[currentSizeIndex];
                 
                 // Add a visual indicator
                 previewTextElement.classList.add('using-card-font');
@@ -447,8 +450,8 @@
                 delete previewTextElement.dataset.currentFont;
                 delete previewTextElement.dataset.currentFontCategory;
                 
-                // Reset font size tracking
-                currentFontSize = 18;
+                // Reset font size tracking to default (16px)
+                currentFontSize = 16;
                 currentSizeIndex = 0;
                 
                 // Show reset notification
@@ -489,10 +492,14 @@
             }, 3000);
         }
 
-        // Font size management
-        let currentFontSize = 18; // Default size when using card font
-        const fontSizeSteps = [18, 22, 26, 30]; // Available font sizes
+        // Font size management for preview text
+        let currentFontSize = 16; // Default size when using card font
+        const fontSizeSteps = [16, 18, 20, 22, 24]; // Available font sizes (increase by 2px)
         let currentSizeIndex = 0; // Current index in fontSizeSteps
+        
+        // Font size management for card text
+        const cardFontSizes = [16, 18, 20, 22]; // Card text sizes (max 22px)
+        const cardSizeMap = new Map(); // Track individual card sizes
 
         function increasePreviewFontSize() {
             const previewTextElement = document.getElementById('preview-text');
@@ -522,6 +529,84 @@
                     increaseBtn.classList.remove('active');
                 }, 500);
             }
+        }
+        
+        function increaseCardTextSize(previewId) {
+            const previewElement = document.getElementById(previewId);
+            if (previewElement) {
+                // Get current size index for this card, default to 0 (16px)
+                let currentIndex = cardSizeMap.get(previewId) || 0;
+                
+                // Increase size index, cycle back to 0 if at the end
+                currentIndex = (currentIndex + 1) % cardFontSizes.length;
+                
+                // Update the card size map
+                cardSizeMap.set(previewId, currentIndex);
+                
+                // Apply the new font size
+                const newSize = cardFontSizes[currentIndex];
+                previewElement.style.fontSize = newSize + 'px';
+                
+                // Show notification
+                showCardSizeNotification(newSize);
+                
+                // Add visual feedback to the button
+                const button = event.target.closest('.card-size-increase-btn');
+                if (button) {
+                    button.classList.add('active');
+                    setTimeout(() => {
+                        button.classList.remove('active');
+                    }, 300);
+                }
+            }
+        }
+        
+        function showCardSizeNotification(size) {
+            // Remove any existing notification
+            const existingNotification = document.querySelector('.card-size-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = 'card-size-notification';
+            notification.textContent = `Card text size: ${size}px`;
+            
+            // Style the notification
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.left = '20px';
+            notification.style.padding = '12px 20px';
+            notification.style.backgroundColor = '#4285F4';
+            notification.style.color = 'white';
+            notification.style.borderRadius = '25px';
+            notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            notification.style.zIndex = '1000';
+            notification.style.fontSize = '14px';
+            notification.style.fontWeight = '500';
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(20px)';
+            notification.style.transition = 'opacity 0.3s, transform 0.3s';
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // Remove after 2 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
         }
 
         function showFontSizeNotification(size) {
@@ -745,7 +830,6 @@
 
             return `
                 <div class="font-card ${fontClass}" data-font-name="${font.name}" data-font-category="${font.category}">
-                    <div class="font-number">${index}</div>
                     <div class="font-card-content">
                         <div style="position: relative; min-height: 24px; display: flex; align-items: center;">
                             <div class="font-name" style="font-family: '${font.name}', ${getFallbackFont(font.category)}; line-height: normal; vertical-align: baseline;">${font.name}</div>
@@ -753,17 +837,21 @@
                         </div>
                         <div class="favorite-heart" data-font-name="${font.name}">♥</div>
                         <div class="font-category">${font.category}</div>
-                        <div class="font-preview" id="${previewId}"
-                             style="font-family: '${font.name}', ${getFallbackFont(font.category)}"
-                             data-font-name="${font.name}"
-                             data-fallback-font="${getFallbackFont(font.category)}">
-                             ${displayText}
+                        <div style="position: relative;">
+                            <div class="font-preview" id="${previewId}"
+                                 style="font-family: '${font.name}', ${getFallbackFont(font.category)};"
+                                 data-font-name="${font.name}"
+                                 data-fallback-font="${getFallbackFont(font.category)}">
+                                 ${displayText}
+                            </div>
                         </div>
+                        <button class="card-size-increase-btn" title="Increase card text size" onclick="increaseCardTextSize('${previewId}')">+</button>
                     </div>
                     <div class="font-actions">
                         <button class="btn btn-primary" onclick="copyCSS('${font.name}', '${font.category}', event)">Copy CSS</button>
                         <button class="btn btn-secondary" onclick="viewOnGoogle('${font.name}')">View on Google</button>
                     </div>
+                    <div class="font-number">${index}</div>
                 </div>
             `;
         }

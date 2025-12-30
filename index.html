@@ -64,13 +64,6 @@
     </div>
 
     <script>
-        // Very basic test - this should definitely show
-        window.onload = function() {
-            console.log('PAGE LOADED - This should appear in console');
-        };
-        
-        console.log('Script started loading...');
-        
         // Global variables
         let allFonts = [];
         let currentCategory = 'all';
@@ -224,9 +217,7 @@
                 displayFonts();
 
                 // Set up event listeners
-                console.log('About to call setupEventListeners...');
                 setupEventListeners();
-                console.log('setupEventListeners completed');
 
             } catch (error) {
                 console.error('Error loading fonts:', error);
@@ -235,17 +226,8 @@
         }
 
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            console.log('fontSearch element:', fontSearch);
-            
-            if (!fontSearch) {
-                console.error('fontSearch element not found!');
-                return;
-            }
-            
             // Search functionality
             fontSearch.addEventListener('input', () => {
-                console.log('Search input changed:', fontSearch.value);
                 displayFonts();
                 // Show/hide clear button based on search input
                 const clearSearchBtn = document.getElementById('clear-search');
@@ -256,13 +238,10 @@
 
             // Click on search box - position cursor after category name
             fontSearch.addEventListener('click', () => {
-                console.log('Search box clicked!');
-                
                 // Ensure the search box has focus
                 fontSearch.focus();
-                console.log('Search box focused, current value:', fontSearch.value);
                 
-                // Get category name from global variable instead of DOM element
+                // Get category name from global variable
                 let categoryName = '';
                 if (currentCategory === 'caps') {
                     categoryName = 'CAPS Fonts';
@@ -275,25 +254,17 @@
                     categoryName = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
                 }
                 
-                console.log('Current category from variable:', currentCategory);
-                console.log('Formatted category name:', categoryName);
-                
                 if (fontSearch.value === '') {
-                    console.log('Setting search value to:', categoryName + ': ');
                     // Set search value to category name with colon and space
                     fontSearch.value = categoryName + ': ';
                     // Position cursor at the end
                     fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
-                    console.log('Cursor positioned at:', fontSearch.value.length);
                     
                     // Show the clear button since we now have content
                     const clearSearchBtn = document.getElementById('clear-search');
                     if (clearSearchBtn) {
                         clearSearchBtn.style.display = 'block';
-                        console.log('Clear button shown');
                     }
-                } else {
-                    console.log('Search box already has content:', fontSearch.value);
                 }
             });
             

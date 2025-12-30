@@ -335,6 +335,15 @@
                     // Update current category
                     currentCategory = button.dataset.category;
 
+                    // Clear search box when switching categories (reset to placeholder)
+                    fontSearch.value = '';
+                    
+                    // Hide clear button since search is now empty
+                    const clearSearchBtn = document.getElementById('clear-search');
+                    if (clearSearchBtn) {
+                        clearSearchBtn.style.display = 'none';
+                    }
+
                     // Display fonts for selected category
                     displayFonts();
                 });

@@ -380,6 +380,13 @@ h1 {
     text-align: center;
 }
 
+.search-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 500px;
+}
+
 #font-search {
     padding: 12px 20px;
     width: 100%;
@@ -389,6 +396,43 @@ h1 {
     font-size: 16px;
     outline: none;
     transition: border-color 0.3s;
+    padding-right: 40px; /* Make space for clear button */
+}
+
+#clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    display: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    z-index: 1;
+}
+
+#clear-search:hover {
+    color: #666;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#clear-search:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.dark-theme #clear-search {
+    color: #777;
+}
+
+.dark-theme #clear-search:hover {
+    color: #ccc;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 #font-search:focus {

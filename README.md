@@ -32,10 +32,10 @@ A web interface for browsing and previewing Google Fonts with the ability to gen
    - If not, manually open that URL in your browser
 
 3. **Using the interface:**
-   - **Search**: Type in the search box to filter fonts by name
+   - **Search**: Type in the search box to filter fonts by name (click the × button to clear)
    - **Categories**: Click category buttons to filter by font type
    - **Preview**: Change the preview text to see how fonts look with your content
-   - **Copy CSS**: Click "Copy CSS" to get ready-to-use @font-face CSS
+   - **Copy CSS**: Click "Copy CSS" to get ready-to-use @font-face CSS (now works reliably!)
    - **View on Google**: Click to see the font on Google Fonts website
 
 ### Alternative: Simple Python Server

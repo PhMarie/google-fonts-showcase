@@ -255,8 +255,8 @@
                 }
                 
                 if (fontSearch.value === '') {
-                    // Set search value to category name with colon and space
-                    fontSearch.value = categoryName + ': ';
+                    // Set search value with descriptive prefix
+                    fontSearch.value = 'Searching in ' + categoryName + ': ';
                     // Position cursor at the end
                     fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
                     

@@ -267,6 +267,30 @@
                     }
                 }
             });
+
+            // Reset search box when clicking outside (blur event)
+            fontSearch.addEventListener('blur', () => {
+                // Only reset if the search box contains only the prefix (no user typing)
+                const searchValue = fontSearch.value;
+                const expectedPrefix = 'Searching in ';
+                
+                if (searchValue.startsWith(expectedPrefix)) {
+                    const prefixEnd = expectedPrefix.length;
+                    const categoryPart = searchValue.substring(prefixEnd);
+                    
+                    // Check if it's just the prefix with category name and colon
+                    if (categoryPart.endsWith(': ') && !categoryPart.includes(': ', prefixEnd)) {
+                        // Reset to empty (placeholder will show)
+                        fontSearch.value = '';
+                        
+                        // Hide clear button
+                        const clearSearchBtn = document.getElementById('clear-search');
+                        if (clearSearchBtn) {
+                            clearSearchBtn.style.display = 'none';
+                        }
+                    }
+                }
+            });
             
             // Clear search button functionality
             const clearSearchBtn = document.getElementById('clear-search');

@@ -262,29 +262,23 @@
                 fontSearch.focus();
                 console.log('Search box focused, current value:', fontSearch.value);
                 
-                // Get the current category name from the counter
-                // Try multiple ways to find the element
-                let categoryNameElement = document.getElementById('category-name');
-                console.log('Category name element (by ID):', categoryNameElement);
-                
-                // If not found by ID, try to find it by other means
-                if (!categoryNameElement) {
-                    const fontCounter = document.querySelector('.font-counter');
-                    if (fontCounter) {
-                        const spanElements = fontCounter.querySelectorAll('span');
-                        if (spanElements.length >= 1) {
-                            categoryNameElement = spanElements[0]; // First span should be category name
-                            console.log('Category name element (by query):', categoryNameElement);
-                        }
-                    }
+                // Get category name from global variable instead of DOM element
+                let categoryName = '';
+                if (currentCategory === 'caps') {
+                    categoryName = 'CAPS Fonts';
+                } else if (currentCategory === 'all') {
+                    categoryName = 'All Fonts';
+                } else if (currentCategory === 'favorites') {
+                    categoryName = 'Favorites';
+                } else {
+                    // Capitalize first letter for other categories
+                    categoryName = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
                 }
                 
-                if (categoryNameElement) {
-                    console.log('Category name:', categoryNameElement.textContent);
-                }
+                console.log('Current category from variable:', currentCategory);
+                console.log('Formatted category name:', categoryName);
                 
-                if (categoryNameElement && fontSearch.value === '') {
-                    const categoryName = categoryNameElement.textContent;
+                if (fontSearch.value === '') {
                     console.log('Setting search value to:', categoryName + ': ');
                     // Set search value to category name with colon and space
                     fontSearch.value = categoryName + ': ';
@@ -299,7 +293,7 @@
                         console.log('Clear button shown');
                     }
                 } else {
-                    console.log('Condition not met - categoryNameElement:', categoryNameElement, 'fontSearch.value:', fontSearch.value);
+                    console.log('Search box already has content:', fontSearch.value);
                 }
             });
             

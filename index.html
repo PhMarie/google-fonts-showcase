@@ -64,6 +64,8 @@
     </div>
 
     <script>
+        console.log('Script started loading...');
+        
         // Global variables
         let allFonts = [];
         let currentCategory = 'all';
@@ -217,7 +219,9 @@
                 displayFonts();
 
                 // Set up event listeners
+                console.log('About to call setupEventListeners...');
                 setupEventListeners();
+                console.log('setupEventListeners completed');
 
             } catch (error) {
                 console.error('Error loading fonts:', error);
@@ -226,8 +230,17 @@
         }
 
         function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            console.log('fontSearch element:', fontSearch);
+            
+            if (!fontSearch) {
+                console.error('fontSearch element not found!');
+                return;
+            }
+            
             // Search functionality
             fontSearch.addEventListener('input', () => {
+                console.log('Search input changed:', fontSearch.value);
                 displayFonts();
                 // Show/hide clear button based on search input
                 const clearSearchBtn = document.getElementById('clear-search');

@@ -263,8 +263,21 @@
                 console.log('Search box focused, current value:', fontSearch.value);
                 
                 // Get the current category name from the counter
-                const categoryNameElement = document.getElementById('category-name');
-                console.log('Category name element:', categoryNameElement);
+                // Try multiple ways to find the element
+                let categoryNameElement = document.getElementById('category-name');
+                console.log('Category name element (by ID):', categoryNameElement);
+                
+                // If not found by ID, try to find it by other means
+                if (!categoryNameElement) {
+                    const fontCounter = document.querySelector('.font-counter');
+                    if (fontCounter) {
+                        const spanElements = fontCounter.querySelectorAll('span');
+                        if (spanElements.length >= 1) {
+                            categoryNameElement = spanElements[0]; // First span should be category name
+                            console.log('Category name element (by query):', categoryNameElement);
+                        }
+                    }
+                }
                 
                 if (categoryNameElement) {
                     console.log('Category name:', categoryNameElement.textContent);

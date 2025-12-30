@@ -238,6 +238,9 @@
 
             // Click on search box - position cursor after category name
             fontSearch.addEventListener('click', () => {
+                // Ensure the search box has focus
+                fontSearch.focus();
+                
                 // Get the current category name from the counter
                 const categoryNameElement = document.getElementById('category-name');
                 if (categoryNameElement && fontSearch.value === '') {
@@ -246,6 +249,12 @@
                     fontSearch.value = categoryName + ': ';
                     // Position cursor at the end
                     fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
+                    
+                    // Show the clear button since we now have content
+                    const clearSearchBtn = document.getElementById('clear-search');
+                    if (clearSearchBtn) {
+                        clearSearchBtn.style.display = 'block';
+                    }
                 }
             });
             

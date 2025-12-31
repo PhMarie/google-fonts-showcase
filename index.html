@@ -256,7 +256,12 @@
                 
                 if (fontSearch.value === '') {
                     // Set search value with descriptive prefix
-                    fontSearch.value = 'Searching in ' + categoryName + ': ';
+                    // Special case for CAPS category
+                    if (currentCategory === 'caps') {
+                        fontSearch.value = 'Search CAPS in All Fonts: ';
+                    } else {
+                        fontSearch.value = 'Searching in ' + categoryName + ': ';
+                    }
                     // Position cursor at the end
                     fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
                     

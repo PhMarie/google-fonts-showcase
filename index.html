@@ -258,7 +258,7 @@
                     // Set search value with descriptive prefix
                     // Special case for CAPS category
                     if (currentCategory === 'caps') {
-                        fontSearch.value = 'Search CAPS in All Fonts: ';
+                        fontSearch.value = 'Search CAPS in All Fonts Category please...';
                     } else {
                         fontSearch.value = 'Searching in ' + categoryName + ': ';
                     }
@@ -723,8 +723,22 @@
             }
             // Extract actual search term (remove category prefix if present)
             const fullSearchValue = fontSearch.value;
-            const colonIndex = fullSearchValue.indexOf(':');
-            const searchTerm = colonIndex !== -1 ? fullSearchValue.substring(colonIndex + 1).trim().toLowerCase() : fullSearchValue.toLowerCase();
+            let searchTerm = fullSearchValue.toLowerCase();
+            
+            // Handle different prefix formats
+            if (currentCategory === 'caps') {
+                // CAPS prefix: "Search CAPS in All Fonts Category please..."
+                const capsPrefix = 'search caps in all fonts category please...';
+                if (fullSearchValue.toLowerCase().startsWith(capsPrefix)) {
+                    searchTerm = fullSearchValue.substring(capsPrefix.length).trim().toLowerCase();
+                }
+            } else {
+                // Other categories: "Searching in [Category]: "
+                const colonIndex = fullSearchValue.indexOf(':');
+                if (colonIndex !== -1) {
+                    searchTerm = fullSearchValue.substring(colonIndex + 1).trim().toLowerCase();
+                }
+            }
 
             // Show loading state
             fontsContainer.innerHTML = `<div class="loading">Loading fonts...</div>`;

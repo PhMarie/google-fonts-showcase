@@ -286,6 +286,17 @@ body.dark-theme {
     font-weight: 300;
 }
 
+/* Dark theme background letters - reduced opacity for better readability */
+.dark-theme .corner-letter {
+    color: rgba(150, 150, 150, 0.2);
+    opacity: 0.3;
+}
+
+.dark-theme .pattern-letter {
+    color: rgba(180, 180, 180, 0.15);
+    opacity: 0.2;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -308,11 +319,13 @@ header {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     margin-bottom: 30px;
     transition: all 0.3s;
+    border: 1px solid rgba(0, 0, 0, 0.03); /* Subtle border for light theme */
 }
 
 .dark-theme .sticky-controls {
-    background-color: rgba(33, 33, 33, 0.95);
+    background-color: rgba(33, 33, 33, 0.9); /* Slightly reduced opacity to hint at background */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle border, slightly lighter than background */
 }
 
 /* Adjust spacing for sticky elements */
@@ -372,7 +385,7 @@ h1 {
 
 .font-card {
     position: relative; /* Needed for absolute positioning of font-number */
-    min-height: 220px;
+    min-height: 280px; /* Increased to accommodate larger font names */
 }
 
 .search-container {
@@ -507,14 +520,14 @@ h1 {
 }
 
 .font-name {
-    font-size: 16px;
+    font-size: 32px; /* Doubled from 16px for better visibility */
     font-weight: 600;
     margin-bottom: 5px;
     color: #4285F4;
     line-height: 1.2;
     display: flex;
     align-items: center;
-    height: 24px;
+    height: 48px; /* Adjusted to match new font size */
     /* Match font number height */
 }
 
@@ -551,6 +564,11 @@ h1 {
     margin-bottom: 15px;
     min-height: 80px;
     transition: font-size 0.2s;
+}
+
+/* Cursive fonts - larger default size and higher max size */
+.font-card[data-font-category="cursive"] .font-preview {
+    font-size: 20px;
 }
 
 .card-size-increase-btn {
@@ -626,7 +644,7 @@ h1 {
     top: 15px;
     right: 15px;
     font-size: 24px;
-    cursor: pointer;
+    cursor: pointer !important; /* Ensure cursor stays pointer */
     color: #ccc;
     transition: all 0.3s;
     z-index: 10;

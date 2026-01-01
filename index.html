@@ -76,12 +76,8 @@
         const favorites = new Set(); // Store favorite fonts
         let isDarkTheme = false; // Track dark theme state
 
-        // DOM elements
-        const fontsContainer = document.getElementById('fonts-container');
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const fontSearch = document.getElementById('font-search');
-        const previewTextInput = document.getElementById('preview-text');
-        const categoryButtons = document.querySelectorAll('.category-btn');
+        // DOM elements (will be initialized when DOM is ready)
+        let fontsContainer, themeToggleBtn, fontSearch, previewTextInput, categoryButtons, clearSearchBtn;
 
         // Add beautiful background with 4 large cursive corner letters and pattern
         function addBackgroundLetters() {
@@ -217,6 +213,14 @@
         // Initialize the app
         async function init() {
             try {
+                // Initialize DOM elements
+                fontsContainer = document.getElementById('fonts-container');
+                themeToggleBtn = document.getElementById('theme-toggle');
+                fontSearch = document.getElementById('font-search');
+                previewTextInput = document.getElementById('preview-text');
+                categoryButtons = document.querySelectorAll('.category-btn');
+                clearSearchBtn = document.getElementById('clear-search');
+
                 // Load font data
                 const response = await fetch('google-fonts.json');
                 if (!response.ok) {
@@ -253,7 +257,6 @@
             fontSearch.addEventListener('input', () => {
                 displayFonts();
                 // Show/hide clear button based on search input
-                const clearSearchBtn = document.getElementById('clear-search');
                 if (clearSearchBtn) {
                     clearSearchBtn.style.display = fontSearch.value.length > 0 ? 'block' : 'none';
                 }
@@ -285,7 +288,6 @@
                     fontSearch.selectionStart = fontSearch.selectionEnd = fontSearch.value.length;
                     
                     // Show the clear button since we now have content
-                    const clearSearchBtn = document.getElementById('clear-search');
                     if (clearSearchBtn) {
                         clearSearchBtn.style.display = 'block';
                     }
@@ -299,7 +301,6 @@
                 fontSearch.value = '';
                 
                 // Hide clear button
-                const clearSearchBtn = document.getElementById('clear-search');
                 if (clearSearchBtn) {
                     clearSearchBtn.style.display = 'none';
                 }
@@ -312,7 +313,6 @@
                     fontSearch.value = '';
                     
                     // Hide clear button
-                    const clearSearchBtn = document.getElementById('clear-search');
                     if (clearSearchBtn) {
                         clearSearchBtn.style.display = 'none';
                     }
@@ -327,7 +327,6 @@
             });
             
             // Clear search button functionality
-            const clearSearchBtn = document.getElementById('clear-search');
             if (clearSearchBtn) {
                 clearSearchBtn.addEventListener('click', () => {
                     fontSearch.value = '';
@@ -397,7 +396,6 @@
                     fontSearch.value = '';
                     
                     // Hide clear button since search is now empty
-                    const clearSearchBtn = document.getElementById('clear-search');
                     if (clearSearchBtn) {
                         clearSearchBtn.style.display = 'none';
                     }
@@ -870,9 +868,6 @@
                 }
 
                 return true;
-            });
-
-
             });
 
             // Sort filtered fonts by relevance (exact matches first, then partial matches)
@@ -1550,10 +1545,19 @@ ${optimizedRules}
             localStorage.setItem('favoriteFonts', JSON.stringify(favoritesArray));
         }
         
-        // Start the app
-        init();
-        loadFavorites();
-        loadThemePreference();
+        // Start the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            loadFavorites();
+            loadThemePreference();
+        });
+        
+        // Also call it immediately in case DOM is already loaded
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            init();
+            loadFavorites();
+            loadThemePreference();
+        }
         
         // Force show favorites button for testing (remove this later)
         setTimeout(() => {

@@ -12,11 +12,7 @@
     <!-- External CSS file -->
     <link rel="stylesheet" href="styles.css">
     
-    <!-- Font Similarity Database -->
-    <script type="module">
-        import { fontSimilarityDB } from './font_similarity_db.js';
-        window.fontSimilarityDB = fontSimilarityDB;
-    </script>
+
     
     </style>
 </head>
@@ -876,60 +872,7 @@
                 return true;
             });
 
-            // Check for similar fonts if no results found
-            if (filteredFonts.length === 0 && searchTerm) {
-                // Check if we have similarity data
-                if (window.fontSimilarityDB && window.fontSimilarityDB[searchTerm]) {
-                    const similarFonts = window.fontSimilarityDB[searchTerm];
-                    console.log(`Similar fonts found for ${searchTerm}:`, similarFonts);
-                    
-                    // Show notification with similar fonts
-                    const notification = document.createElement('div');
-                    notification.className = 'similar-fonts-notification';
-                    notification.textContent = `No exact match found. Did you mean: ${similarFonts.join(', ')}?`;
-                    notification.style.position = 'fixed';
-                    notification.style.top = '20px';
-                    notification.style.right = '20px';
-                    notification.style.padding = '10px 15px';
-                    notification.style.backgroundColor = '#4285F4';
-                    notification.style.color = 'white';
-                    notification.style.borderRadius = '5px';
-                    notification.style.zIndex = '1000';
-                    notification.style.opacity = '0';
-                    notification.style.transform = 'translateY(-20px)';
-                    notification.style.transition = 'all 0.3s';
-                    
-                    // Add click handler to each similar font
-                    similarFonts.forEach(similarFont => {
-                        const fontLink = document.createElement('a');
-                        fontLink.href = `https://fonts.google.com/specimen/${similarFont.replace(/ /g, '+')}`;
-                        fontLink.textContent = similarFont;
-                        fontLink.style.color = 'white';
-                        fontLink.style.marginLeft = '5px';
-                        fontLink.target = '_blank';
-                        notification.appendChild(fontLink);
-                    });
-                    
-                    document.body.appendChild(notification);
-                    
-                    // Animate in
-                    setTimeout(() => {
-                        notification.style.opacity = '1';
-                        notification.style.transform = 'translateY(0)';
-                    }, 10);
-                    
-                    // Remove after 5 seconds
-                    setTimeout(() => {
-                        notification.style.opacity = '0';
-                        notification.style.transform = 'translateY(-20px)';
-                        setTimeout(() => {
-                            if (notification.parentNode) {
-                                notification.parentNode.removeChild(notification);
-                            }
-                        }, 300);
-                    }, 5000);
-                }
-            }
+
             });
 
             // Sort filtered fonts by relevance (exact matches first, then partial matches)

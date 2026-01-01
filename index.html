@@ -1210,7 +1210,7 @@
                     if (isFallback) {
                         alert(`⚠️ Copied fallback CSS for ${fontName}. Could not extract @font-face rules.`);
                     } else {
-                        alert(`✅ CSS for ${fontName} copied to clipboard! Check console for debug details.`);
+                        alert(`✅ CSS for ${fontName} copied to clipboard!`);
                     }
                 }).catch(err => {
                     console.error('Clipboard API failed, trying fallback:', err);

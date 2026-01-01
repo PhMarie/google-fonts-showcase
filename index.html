@@ -22,10 +22,10 @@
         <header>
             <h1>🎨 Google Fonts Showcase</h1>
             <p class="subtitle">Browse and preview beautiful Google Fonts</p>
-            <div class="font-counter" id="font-counter"><span id="category-name">All Fonts</span>: <span id="category-count">0</span> fonts</div>
         </header>
 
         <div class="sticky-controls">
+            <div class="font-counter" id="font-counter"><span id="category-name">All Fonts</span>: <span id="category-count">0</span> fonts</div>
             <div class="search-container">
                 <div class="search-input-wrapper">
                     <input type="text" id="font-search" placeholder="🔍 Search fonts by name..." 
@@ -632,8 +632,8 @@
         // Font size management for preview text
         // Different size ranges for different font categories (same as card text)
         const previewFontSizes = {
-            'cursive': [20, 22, 24], // Cursive fonts: start at 20px, go up to 24px
-            'default': [16, 18, 20, 22, 24] // Other fonts: standard sizes
+            'cursive': [20, 22, 24, 28, 32], // Cursive fonts: start at 20px, go up to 32px
+            'default': [16, 18, 20, 22, 24, 28, 32] // Other fonts: standard sizes up to 32px
         };
         let currentFontSize = 16; // Default size when using card font
         let currentSizeArray = previewFontSizes['default']; // Default size array
@@ -642,8 +642,8 @@
         // Font size management for card text
         // Different size ranges for different font categories
         const cardFontSizes = {
-            'cursive': [20, 22, 24], // Cursive fonts: start at 20px, go up to 24px
-            'default': [16, 18, 20, 22] // Other fonts: standard sizes
+            'cursive': [20, 22, 24, 28, 32], // Cursive fonts: start at 20px, go up to 32px
+            'default': [16, 18, 20, 22, 24, 28, 32] // Other fonts: standard sizes up to 32px
         };
         const cardSizeMap = new Map(); // Track individual card sizes
 

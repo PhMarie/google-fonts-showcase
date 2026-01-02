@@ -616,27 +616,27 @@ h1 {
     background-color: #e0e0e0;
 }
 
-.variant-badge::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
+/* Remove CSS pseudo-element tooltips - use browser native tooltips instead */
+.variant-badge {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
     font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    margin-bottom: 4px;
-    z-index: 100;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #f0f0f0;
+    color: #666;
+    opacity: 0.7;
+    transition: all 0.2s;
+    cursor: help;
+    position: relative;
 }
 
-.variant-badge:hover::after {
+.variant-badge:hover {
     opacity: 1;
+    transform: scale(1.1);
+    background-color: #e0e0e0;
 }
 
 .variant-badge.active {

@@ -2000,6 +2000,8 @@ ${additionalClasses}
                                 
                                 weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
                                 weightBadge.textContent = '🔢';
+                                // Also set data-tooltip for reliability
+                                weightBadge.setAttribute('data-tooltip', `Available weights: ${weightNames.join(', ')}`);
                                 variantBadges.appendChild(weightBadge);
                             }
                             
@@ -2061,11 +2063,32 @@ ${additionalClasses}
             localStorage.setItem('favoriteFonts', JSON.stringify(favoritesArray));
         }
 
+        // Enhance tooltips for better visibility
+        function enhanceTooltips() {
+            const badges = document.querySelectorAll('.variant-badge');
+            badges.forEach(badge => {
+                // Ensure title attribute is set
+                if (!badge.title && badge.hasAttribute('data-tooltip')) {
+                    badge.title = badge.getAttribute('data-tooltip');
+                }
+                
+                // Add hover effect for better UX
+                badge.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                });
+                
+                badge.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+
         // Start the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             init();
             loadFavorites();
             loadThemePreference();
+            enhanceTooltips();
         });
 
         // Also call it immediately in case DOM is already loaded

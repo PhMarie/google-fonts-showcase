@@ -1916,106 +1916,175 @@ ${additionalClasses}
         }
 
         // Font variant detection and badge management
-        // Simple variant detection using local font data (no API calls)
-async function detectAndShowFontVariants() {
-    console.log('🔍 Detecting font variants using local data...');
-    
-    // Get all visible font cards
-    const fontCards = document.querySelectorAll('.font-card:not(.hidden)');
-    console.log(`Found ${fontCards.length} visible font cards`);
-    
-    if (fontCards.length === 0) {
-        console.warn('⚠️ No visible font cards found');
-        return;
-    }
-    
-    // Load font data from JSON file
-    fetch('google-fonts.json')
-        .then(response => response.json())
-        .then(fontData => {
-            fontCards.forEach(card => {
-                const fontName = card.dataset.fontName;
-                if (!fontName) return;
+        async function detectAndShowFontVariants() {
+            try {
+                console.log('🔍 Detecting font variants for visible fonts...');
                 
-                const fontInfo = fontData[fontName];
-                if (!fontInfo) {
-                    console.warn(`❌ ${fontName} not found in local data`);
+                // Get all visible font cards
+                const fontCards = document.querySelectorAll('.font-card:not(.hidden)');
+                console.log(`Found ${fontCards.length} visible font cards`);
+                
+                if (fontCards.length === 0) {
+                    console.warn('⚠️ No visible font cards found - cannot add variant badges');
                     return;
                 }
+            
+            
+            for (const card of fontCards) {
+                const fontName = card.dataset.fontName;
+                if (!fontName) continue;
                 
-                const variants = fontInfo.variants || {};
-                const availableWeights = new Set([400]); // Default weight
-                let hasItalic = false;
-                
-                // Extract weights and styles from local data
-                for (const style in variants) {
-                    for (const weight in variants[style]) {
-                        const weightNum = parseInt(weight);
-                        if (!isNaN(weightNum)) {
-                            availableWeights.add(weightNum);
-                            if (style === 'italic') hasItalic = true;
-                        }
-                    }
-                }
-                
-                // Determine if we have multiple weights
-                const hasMultipleWeights = availableWeights.size > 1 || 
-                    (availableWeights.size === 1 && !availableWeights.has(400));
-                
-                // Update variant badges
-                const variantBadges = card.querySelector('.font-variants');
-                if (variantBadges) {
-                    variantBadges.innerHTML = '';
+                try {
+                    // Fetch font data from Google Fonts API with timeout
+                    const fontNameUrl = fontName.replace(/ /g, '+');
+                    let response;
                     
-                    // Add weight badge if multiple weights available
-                    if (hasMultipleWeights) {
-                        const weightBadge = document.createElement('span');
-                        weightBadge.className = 'variant-badge weight-badge active';
+                    try {
+                        // Add timeout to API call
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
                         
-                        // Create detailed tooltip
-                        const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
-                        const weightNames = [];
+                        response = await fetch(`https://fonts.googleapis.com/css2?family=${fontNameUrl}:ital,wght@0,100..900;1,100..900&display=swap`, {
+                            signal: controller.signal
+                        });
                         
-                        sortedWeights.forEach(weight => {
-                            switch(weight) {
-                                case 100: weightNames.push('Thin (100)'); break;
-                                case 200: weightNames.push('Extra Light (200)'); break;
-                                case 300: weightNames.push('Light (303)'); break;
-                                case 400: weightNames.push('Regular (400)'); break;
-                                case 500: weightNames.push('Medium (500)'); break;
-                                case 600: weightNames.push('SemiBold (600)'); break;
-                                case 700: weightNames.push('Bold (700)'); break;
-                                case 800: weightNames.push('Extra Bold (800)'); break;
-                                case 900: weightNames.push('Black (900)'); break;
-                                default: weightNames.push(`${weight}`);
+                        clearTimeout(timeoutId);
+                    } catch (error) {
+                        console.warn(`⏱️  Timeout or error fetching ${fontName} from Google Fonts API:`, error.message);
+                        
+                        // Fallback: Use local font data if available
+                        try {
+                            const localFontData = JSON.parse(localStorage.getItem('googleFontsData') || '{}');
+                            if (localFontData[fontName]) {
+                                console.log(`💾 Using local data for ${fontName}`);
+                                // Extract variants from local data
+                                const variants = localFontData[fontName]?.variants || {};
+                                for (const style of Object.keys(variants)) {
+                                    for (const weight of Object.keys(variants[style])) {
+                                        const weightNum = parseInt(weight);
+                                        if (!isNaN(weightNum)) {
+                                            availableWeights.add(weightNum);
+                                            if (style === 'italic') hasItalic = true;
+                                        }
+                                    }
+                                }
+                                
+                                // Skip to badge creation since we don't have CSS
+                                continue;
+                            }
+                        } catch (e) {
+                            console.warn(`💾 No local data available for ${fontName}:`, e.message);
+                        }
+                        
+                        console.warn(`❌ Cannot get variant data for ${fontName} - using defaults`);
+                        // Use default assumptions
+                        availableWeights.add(400); // Assume at least regular weight
+                        continue; // Skip to badge creation
+                    }
+                    
+                    if (response && response.ok) {
+                        const fontCSS = await response.text();
+                        
+                        // Analyze the CSS to detect available variants
+                        const ruleMatches = fontCSS.match(/@font-face[^}]+}/g) || [];
+                        
+                        let hasItalic = false;
+                        let hasMultipleWeights = false;
+                        const availableWeights = new Set([400]); // Default weight
+                        
+                        ruleMatches.forEach(rule => {
+                            // Check for italic style
+                            if (rule.includes('font-style: italic')) {
+                                hasItalic = true;
+                            }
+                            
+                            // Check for different weights
+                            const weightMatch = rule.match(/font-weight:\s*(\d+(?:\.\d+)?(?:\s*\d+(?:\.\d+)?)?)/);
+                            if (weightMatch) {
+                                const weightStr = weightMatch[1];
+                                
+                                // Handle variable fonts (e.g., "100 900")
+                                if (weightStr.includes(' ')) {
+                                    hasMultipleWeights = true;
+                                    const [start, end] = weightStr.split(' ').map(Number);
+                                    availableWeights.add(start);
+                                    availableWeights.add(end);
+                                } else {
+                                    const weight = parseInt(weightStr);
+                                    if (!isNaN(weight) && weight !== 400) {
+                                        availableWeights.add(weight);
+                                        hasMultipleWeights = true;
+                                    }
+                                }
                             }
                         });
                         
-                        weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
-                        weightBadge.textContent = '🔢';
-                        variantBadges.appendChild(weightBadge);
+                        // Update variant badges
+                        const variantBadges = card.querySelector('.font-variants');
+                        if (variantBadges) {
+                            // Clear existing badges
+                            variantBadges.innerHTML = '';
+                            console.log(`📋 Adding badges for ${fontName}: weights=${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, italic=${hasItalic}`);
+                            
+                            // Add weight badge if multiple weights available
+                            if (hasMultipleWeights) {
+                                const weightBadge = document.createElement('span');
+                                weightBadge.className = 'variant-badge weight-badge active';
+                                
+                                // Create detailed tooltip showing all available weights
+                                const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
+                                const weightNames = [];
+                                
+                                sortedWeights.forEach(weight => {
+                                    // Convert numeric weights to friendly names
+                                    switch(weight) {
+                                        case 100: weightNames.push('Thin (100)'); break;
+                                        case 200: weightNames.push('Extra Light (200)'); break;
+                                        case 300: weightNames.push('Light (300)'); break;
+                                        case 400: weightNames.push('Regular (400)'); break;
+                                        case 500: weightNames.push('Medium (500)'); break;
+                                        case 600: weightNames.push('SemiBold (600)'); break;
+                                        case 700: weightNames.push('Bold (700)'); break;
+                                        case 800: weightNames.push('Extra Bold (800)'); break;
+                                        case 900: weightNames.push('Black (900)'); break;
+                                        default: weightNames.push(`${weight}`);
+                                    }
+                                });
+                                
+                                weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
+                                weightBadge.textContent = '🔢';
+                                // Also set data-tooltip for reliability
+                                weightBadge.setAttribute('data-tooltip', `Available weights: ${weightNames.join(', ')}`);
+                                variantBadges.appendChild(weightBadge);
+                            }
+                            
+                            // Add italic badge if italic available
+                            if (hasItalic) {
+                                const italicBadge = document.createElement('span');
+                                italicBadge.className = 'variant-badge italic-badge active';
+                                italicBadge.title = 'Italic style available';
+                                italicBadge.textContent = '📝';
+                                variantBadges.appendChild(italicBadge);
+                            }
+                        }
+                        
+                        console.log(`✅ ${fontName}: Weights: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, Italic: ${hasItalic}`);
                     }
-                    
-                    // Add italic badge if italic available
-                    if (hasItalic) {
-                        const italicBadge = document.createElement('span');
-                        italicBadge.className = 'variant-badge italic-badge active';
-                        italicBadge.title = 'Italic style available';
-                        italicBadge.textContent = '📝';
-                        variantBadges.appendChild(italicBadge);
-                    }
-                    
-                    console.log(`✅ ${fontName}: Weights: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, Italic: ${hasItalic}`);
+                } catch (error) {
+                    console.error(`❌ Error detecting variants for ${fontName}:`, error);
                 }
-            });
+            }
             
+            // Check if any badges were added
             const allBadges = document.querySelectorAll('.variant-badge');
             console.log(`📊 Total variant badges added: ${allBadges.length}`);
-        })
-        .catch(error => {
-            console.error('❌ Error loading font data:', error);
-        });
-}
+            if (allBadges.length === 0) {
+                console.warn('⚠️ No variant badges were added - check if variant detection worked');
+            }
+            } catch (error) {
+                console.error('❌ Error in detectAndShowFontVariants:', error);
+            }
+        }
 
         // Load and cache font data for better performance
         function loadAndCacheFontData() {

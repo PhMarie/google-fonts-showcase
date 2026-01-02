@@ -101,6 +101,58 @@ body.dark-theme {
     border-color: #5a7bc4;
 }
 
+/* Global card size button - matches category buttons but shows it's interactive */
+#global-card-size-btn {
+    position: relative;
+    overflow: hidden;
+    background-color: #e8f0fe; /* Match font category tag color */
+    color: #4285F4; /* Match font category tag text color */
+}
+
+#global-card-size-btn::after {
+    content: '+';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0.7;
+}
+
+#global-card-size-btn:hover {
+    background-color: #d9e8fe; /* Slightly lighter blue on hover */
+    border-color: #4285F4;
+}
+
+#global-card-size-btn:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+#global-card-size-btn.active {
+    transform: scale(1.05);
+    background-color: #cce0fe; /* Slightly darker light blue for active state */
+    border-color: #4285F4;
+}
+
+.dark-theme #global-card-size-btn {
+    background-color: #2a2a2a; /* Slightly darker grey than other categories (#333) */
+    color: white; /* Keep text white as requested */
+    border-color: #4285F4; /* Blue border as requested */
+}
+
+.dark-theme #global-card-size-btn:hover {
+    background-color: #3a3a3a; /* Slightly lighter grey on hover */
+    border-color: #5a9cf8; /* Lighter blue border on hover */
+}
+
+.dark-theme #global-card-size-btn.active {
+    background-color: #4a4a4a; /* Even lighter grey for active state */
+    color: white;
+    border-color: #72b3ff; /* Even lighter blue border when active */
+}
+
 .dark-theme .pagination button {
     background-color: #333;
     border-color: #555;
@@ -545,6 +597,43 @@ h1 {
     /* Match font number height */
 }
 
+/* Adjust CAP category titles to be 1.5x longer (18px) */
+.font-card[data-font-category="caps"] .font-name {
+    font-size: 18px !important; /* 1.5x longer: 12px * 1.5 = 18px */
+    white-space: nowrap !important; /* Prevent text wrapping */
+    overflow: hidden !important; /* Hide overflow if necessary */
+    text-overflow: ellipsis !important; /* Add ellipsis if text overflows */
+    max-width: 100% !important; /* Ensure it doesn't exceed container width */
+    line-height: 1.2 !important; /* Consistent line height */
+    height: auto !important; /* Allow natural height */
+}
+
+/* Additional backup rule with even higher specificity */
+body .font-card[data-font-category="caps"] .font-name {
+    font-size: 18px !important;
+}
+
+/* Target the specific container structure */
+.fonts-grid .font-card[data-font-category="caps"] .font-name {
+    font-size: 18px !important;
+}
+
+/* Target CAP fonts with specific class - highest priority */
+.cap-font-name {
+    font-size: 18px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    line-height: 1.2 !important;
+    height: auto !important;
+}
+
+/* Target specific problematic CAP fonts by name - slightly smaller */
+.cap-font-name:where(:contains("Diplomata SC"), :contains("Holtwood One SC"), :contains("IM Fell Double Pica SC"), :contains("IM Fell French Canon SC"), :contains("IM Fell Great Primer SC"), :contains("Playfair Display SC")) {
+    font-size: 16px !important; /* 18px - 2px for extra-long names */
+}
+
 .font-category {
     display: inline-block;
     padding: 4px 12px;
@@ -714,13 +803,57 @@ h1 {
     padding: 0 20px;
 }
 
+/* Global card size control */
+.global-card-controls {
+    margin: 10px auto 20px;
+    max-width: 1200px;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.global-card-controls button {
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.global-card-controls button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.global-card-controls button:active {
+    transform: translateY(0);
+}
+
+.global-card-controls button.active {
+    background-color: #3e8e41;
+    transform: scale(1.05);
+}
+
+.dark-theme .global-card-controls button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.dark-theme .global-card-controls button:hover {
+    background-color: #45a049;
+}
+
 #preview-text {
     padding: 12px 60px 12px 20px; /* Increased right padding to prevent overlap with buttons */
     width: 100%;
     max-width: 100%;
     border: 2px solid #ddd;
     border-radius: 25px;
-    font-size: 16px;
     outline: none;
     box-sizing: border-box;
     background-color: white; /* White background for light mode */

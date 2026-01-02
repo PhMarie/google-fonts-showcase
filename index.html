@@ -1309,6 +1309,11 @@
                         </div>
                         <div class="favorite-heart" data-font-name="${font.name}">♥</div>
                         <div class="font-category">${font.category}</div>
+                        <div class="font-variants">
+                            <!-- Variant badges will be added dynamically -->
+                            <span class="variant-badge" title="Multiple weights available">🔢</span>
+                            <span class="variant-badge italic-badge" title="Italic style available">📝</span>
+                        </div>
                         <div style="position: relative;">
                             <div class="font-preview" id="${previewId}"
                                  style="font-family: '${font.name}', ${getFallbackFont(font.category)}; font-size: ${cardFontSize}px;"
@@ -1398,6 +1403,11 @@
                     const currentSize = globalCardSizes['default'][globalCardSizeIndex];
                     btn.textContent = currentSize + 'px';
                 }
+                
+                // Detect and show font variants after a short delay
+                setTimeout(() => {
+                    detectAndShowFontVariants();
+                }, 500);
             }, 100);
         }
 
@@ -1651,30 +1661,60 @@
 
                 const fontCSS = await response.text();
 
-                // Simple and reliable extraction: get all @font-face rules from the CSS
+                // Enhanced CSS extraction: get all @font-face rules and analyze variants
                 console.log('Starting CSS extraction for:', fontName);
                 console.log('Full CSS length:', fontCSS.length);
 
+                // Extract all @font-face rules
                 const ruleMatches = fontCSS.match(/@font-face[^}]+}/g);
-
                 console.log('Total @font-face rules found:', ruleMatches ? ruleMatches.length : 0);
 
                 let fontFaceRulesText = '';
+                let availableWeights = new Set([400]); // Default weight
+                let hasItalic = false;
+                let hasVariableFont = false;
 
                 if (ruleMatches && ruleMatches.length > 0) {
                     // Filter to only include latin subset rules
                     const latinRules = ruleMatches.filter(rule => {
                         // Check if this rule is likely part of latin subset
-                        // (Google Fonts puts latin rules after /* latin */ comment)
                         const isLatin = rule.includes('unicode-range') &&
                             (rule.includes('U+0000-00FF') || rule.includes('U+0041-007A'));
+                        
+                        // Analyze the rule to detect available variants
                         if (isLatin) {
-                            console.log('Found latin rule:', rule.substring(0, 100) + '...');
+                            const weightMatch = rule.match(/font-weight:\s*(\d+(?:\.\d+)?(?:\s*\d+(?:\.\d+)?)?)/);
+                            const styleMatch = rule.match(/font-style:\s*(\w+)/);
+                            
+                            if (weightMatch) {
+                                const weightStr = weightMatch[1];
+                                // Handle variable fonts (e.g., "100 900")
+                                if (weightStr.includes(' ')) {
+                                    hasVariableFont = true;
+                                    // Add range endpoints
+                                    const [start, end] = weightStr.split(' ').map(Number);
+                                    availableWeights.add(start);
+                                    availableWeights.add(end);
+                                } else {
+                                    const weight = parseInt(weightStr);
+                                    if (!isNaN(weight)) {
+                                        availableWeights.add(weight);
+                                    }
+                                }
+                            }
+                            
+                            if (styleMatch && styleMatch[1] === 'italic') {
+                                hasItalic = true;
+                            }
                         }
+                        
                         return isLatin;
                     });
 
                     console.log('Latin rules found:', latinRules.length);
+                    console.log('Available weights:', Array.from(availableWeights).sort((a, b) => a - b));
+                    console.log('Has italic:', hasItalic);
+                    console.log('Has variable font:', hasVariableFont);
 
                     if (latinRules.length > 0) {
                         fontFaceRulesText = latinRules.join('\n\n');
@@ -1699,8 +1739,6 @@
 
                 if (fontFaceRulesText) {
                     // Check if we can optimize for variable fonts
-                    const hasVariableFont = fontFaceRulesText.includes('font-weight: 100 900');
-
                     let optimizedRules = fontFaceRulesText;
 
                     // For variable fonts, we can often consolidate multiple weight rules
@@ -1709,12 +1747,11 @@
                         const lines = fontFaceRulesText.split('\n');
                         const filteredLines = [];
                         let inVariableRule = false;
-                        let currentFontStyle = '';
 
                         for (const line of lines) {
                             if (line.includes('@font-face')) {
                                 // Start of a new rule - check if it's a variable font
-                                if (line.includes('font-weight: 100 900')) {
+                                if (line.includes('font-weight: 100 900') || line.includes('font-weight: 1 999')) {
                                     inVariableRule = true;
                                     filteredLines.push(line);
                                 } else {
@@ -1735,53 +1772,47 @@
                     }
 
                     // Create CSS in the exact requested format
-                    // First, check if we have italic variants in the font-face rules
-                    const hasItalic = fontFaceRulesText.includes('font-style: italic');
-                    const hasMultipleWeights = fontFaceRulesText.includes('font-weight: 500') || 
-                                             fontFaceRulesText.includes('font-weight: 600') || 
-                                             fontFaceRulesText.includes('font-weight: 800');
+                    // Convert availableWeights Set to sorted array
+                    const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
 
                     let additionalClasses = '';
                     
-                    // Add italic class if italic variants are available
-                    if (hasItalic) {
+                    // Generate CSS classes for all available weights
+                    sortedWeights.forEach(weight => {
+                        const weightName = getWeightName(weight);
+                        
+                        // Normal style
                         additionalClasses += `
-.${fontNameKebab}-italic {
+.${fontNameKebab}-${weightName} {
     font-family: var(--font-${fontNameKebab});
-    font-weight: 400;
-    font-style: italic;
-}
-
-.${fontNameKebab}-italic-medium {
+    font-weight: ${weight};
+}`;
+                        
+                        // Italic style if available
+                        if (hasItalic) {
+                            additionalClasses += `
+.${fontNameKebab}-${weightName}-italic {
     font-family: var(--font-${fontNameKebab});
-    font-weight: 500;
-    font-style: italic;
-}
-
-.${fontNameKebab}-italic-bold {
-    font-family: var(--font-${fontNameKebab});
-    font-weight: 700;
+    font-weight: ${weight};
     font-style: italic;
 }`;
-                    }
+                        }
+                    });
                     
-                    // Add medium weight class if available
-                    if (hasMultipleWeights) {
-                        additionalClasses += `
-.${fontNameKebab}-medium {
-    font-family: var(--font-${fontNameKebab});
-    font-weight: 500;
-}
-
-.${fontNameKebab}-semibold {
-    font-family: var(--font-${fontNameKebab});
-    font-weight: 600;
-}
-
-.${fontNameKebab}-black {
-    font-family: var(--font-${fontNameKebab});
-    font-weight: 800;
-}`;
+                    // Helper function to convert weight numbers to names
+                    function getWeightName(weight) {
+                        switch(weight) {
+                            case 100: return 'thin';
+                            case 200: return 'extra-light';
+                            case 300: return 'light';
+                            case 400: return 'regular';
+                            case 500: return 'medium';
+                            case 600: return 'semibold';
+                            case 700: return 'bold';
+                            case 800: return 'extra-bold';
+                            case 900: return 'black';
+                            default: return 'weight-' + weight;
+                        }
                     }
 
                     const css = `
@@ -1888,6 +1919,92 @@ ${optimizedRules}
 
         function viewOnGoogle(fontName) {
             window.open(`https://fonts.google.com/specimen/${fontName.replace(/ /g, '+')}`, '_blank');
+        }
+
+        // Font variant detection and badge management
+        async function detectAndShowFontVariants() {
+            console.log('🔍 Detecting font variants for visible fonts...');
+            
+            // Get all visible font cards
+            const fontCards = document.querySelectorAll('.font-card:not(.hidden)');
+            
+            for (const card of fontCards) {
+                const fontName = card.dataset.fontName;
+                if (!fontName) continue;
+                
+                try {
+                    // Fetch font data from Google Fonts API
+                    const fontNameUrl = fontName.replace(/ /g, '+');
+                    const response = await fetch(`https://fonts.googleapis.com/css2?family=${fontNameUrl}:ital,wght@0,100..900;1,100..900&display=swap`);
+                    
+                    if (response.ok) {
+                        const fontCSS = await response.text();
+                        
+                        // Analyze the CSS to detect available variants
+                        const ruleMatches = fontCSS.match(/@font-face[^}]+}/g) || [];
+                        
+                        let hasItalic = false;
+                        let hasMultipleWeights = false;
+                        const availableWeights = new Set([400]); // Default weight
+                        
+                        ruleMatches.forEach(rule => {
+                            // Check for italic style
+                            if (rule.includes('font-style: italic')) {
+                                hasItalic = true;
+                            }
+                            
+                            // Check for different weights
+                            const weightMatch = rule.match(/font-weight:\s*(\d+(?:\.\d+)?(?:\s*\d+(?:\.\d+)?)?)/);
+                            if (weightMatch) {
+                                const weightStr = weightMatch[1];
+                                
+                                // Handle variable fonts (e.g., "100 900")
+                                if (weightStr.includes(' ')) {
+                                    hasMultipleWeights = true;
+                                    const [start, end] = weightStr.split(' ').map(Number);
+                                    availableWeights.add(start);
+                                    availableWeights.add(end);
+                                } else {
+                                    const weight = parseInt(weightStr);
+                                    if (!isNaN(weight) && weight !== 400) {
+                                        availableWeights.add(weight);
+                                        hasMultipleWeights = true;
+                                    }
+                                }
+                            }
+                        });
+                        
+                        // Update variant badges
+                        const variantBadges = card.querySelector('.font-variants');
+                        if (variantBadges) {
+                            // Clear existing badges
+                            variantBadges.innerHTML = '';
+                            
+                            // Add weight badge if multiple weights available
+                            if (hasMultipleWeights) {
+                                const weightBadge = document.createElement('span');
+                                weightBadge.className = 'variant-badge weight-badge active';
+                                weightBadge.title = `Multiple weights available: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}`;
+                                weightBadge.textContent = '🔢';
+                                variantBadges.appendChild(weightBadge);
+                            }
+                            
+                            // Add italic badge if italic available
+                            if (hasItalic) {
+                                const italicBadge = document.createElement('span');
+                                italicBadge.className = 'variant-badge italic-badge active';
+                                italicBadge.title = 'Italic style available';
+                                italicBadge.textContent = '📝';
+                                variantBadges.appendChild(italicBadge);
+                            }
+                        }
+                        
+                        console.log(`✅ ${fontName}: Weights: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, Italic: ${hasItalic}`);
+                    }
+                } catch (error) {
+                    console.error(`❌ Error detecting variants for ${fontName}:`, error);
+                }
+            }
         }
 
         // Load favorites from localStorage

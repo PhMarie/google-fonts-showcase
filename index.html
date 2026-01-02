@@ -1977,7 +1977,28 @@ ${additionalClasses}
                             if (hasMultipleWeights) {
                                 const weightBadge = document.createElement('span');
                                 weightBadge.className = 'variant-badge weight-badge active';
-                                weightBadge.title = `Multiple weights available: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}`;
+                                
+                                // Create detailed tooltip showing all available weights
+                                const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
+                                const weightNames = [];
+                                
+                                sortedWeights.forEach(weight => {
+                                    // Convert numeric weights to friendly names
+                                    switch(weight) {
+                                        case 100: weightNames.push('Thin (100)'); break;
+                                        case 200: weightNames.push('Extra Light (200)'); break;
+                                        case 300: weightNames.push('Light (300)'); break;
+                                        case 400: weightNames.push('Regular (400)'); break;
+                                        case 500: weightNames.push('Medium (500)'); break;
+                                        case 600: weightNames.push('SemiBold (600)'); break;
+                                        case 700: weightNames.push('Bold (700)'); break;
+                                        case 800: weightNames.push('Extra Bold (800)'); break;
+                                        case 900: weightNames.push('Black (900)'); break;
+                                        default: weightNames.push(`${weight}`);
+                                    }
+                                });
+                                
+                                weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
                                 weightBadge.textContent = '🔢';
                                 variantBadges.appendChild(weightBadge);
                             }

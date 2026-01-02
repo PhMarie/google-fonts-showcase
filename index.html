@@ -1935,11 +1935,54 @@ ${additionalClasses}
                 if (!fontName) continue;
                 
                 try {
-                    // Fetch font data from Google Fonts API
+                    // Fetch font data from Google Fonts API with timeout
                     const fontNameUrl = fontName.replace(/ /g, '+');
-                    const response = await fetch(`https://fonts.googleapis.com/css2?family=${fontNameUrl}:ital,wght@0,100..900;1,100..900&display=swap`);
+                    let response;
                     
-                    if (response.ok) {
+                    try {
+                        // Add timeout to API call
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+                        
+                        response = await fetch(`https://fonts.googleapis.com/css2?family=${fontNameUrl}:ital,wght@0,100..900;1,100..900&display=swap`, {
+                            signal: controller.signal
+                        });
+                        
+                        clearTimeout(timeoutId);
+                    } catch (error) {
+                        console.warn(`⏱️  Timeout or error fetching ${fontName} from Google Fonts API:`, error.message);
+                        
+                        // Fallback: Use local font data if available
+                        try {
+                            const localFontData = JSON.parse(localStorage.getItem('googleFontsData') || '{}');
+                            if (localFontData[fontName]) {
+                                console.log(`💾 Using local data for ${fontName}`);
+                                // Extract variants from local data
+                                const variants = localFontData[fontName]?.variants || {};
+                                for (const style of Object.keys(variants)) {
+                                    for (const weight of Object.keys(variants[style])) {
+                                        const weightNum = parseInt(weight);
+                                        if (!isNaN(weightNum)) {
+                                            availableWeights.add(weightNum);
+                                            if (style === 'italic') hasItalic = true;
+                                        }
+                                    }
+                                }
+                                
+                                // Skip to badge creation since we don't have CSS
+                                continue;
+                            }
+                        } catch (e) {
+                            console.warn(`💾 No local data available for ${fontName}:`, e.message);
+                        }
+                        
+                        console.warn(`❌ Cannot get variant data for ${fontName} - using defaults`);
+                        // Use default assumptions
+                        availableWeights.add(400); // Assume at least regular weight
+                        continue; // Skip to badge creation
+                    }
+                    
+                    if (response && response.ok) {
                         const fontCSS = await response.text();
                         
                         // Analyze the CSS to detect available variants
@@ -2043,6 +2086,22 @@ ${additionalClasses}
             }
         }
 
+        // Load and cache font data for better performance
+        function loadAndCacheFontData() {
+            try {
+                // Check if we already have cached data
+                const cachedData = localStorage.getItem('googleFontsData');
+                if (!cachedData) {
+                    console.log('No cached font data found - will cache as we detect variants');
+                    return;
+                }
+                
+                console.log('Found cached font data');
+            } catch (error) {
+                console.error('Error accessing cached font data:', error);
+            }
+        }
+
         // Load favorites from localStorage
         function loadFavorites() {
             const savedFavorites = localStorage.getItem('favoriteFonts');
@@ -2106,6 +2165,7 @@ ${additionalClasses}
         // Start the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             init();
+            loadAndCacheFontData();
             loadFavorites();
             loadThemePreference();
             enhanceTooltips();

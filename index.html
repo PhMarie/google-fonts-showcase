@@ -1308,12 +1308,14 @@
                             <div class="font-name${isAllCaps ? ' cap-font-name' : ''}" style="font-family: '${font.name}', ${getFallbackFont(font.category)}; line-height: normal; vertical-align: baseline;">${font.name}</div>
                         </div>
                         <div class="favorite-heart" data-font-name="${font.name}">♥</div>
-                        <div class="font-category">${font.category}</div>
-                        <div class="font-variants">
-                            <!-- Variant badges will be added dynamically -->
-                            <!-- Fallback badges in case JavaScript fails -->
-                            <span class="variant-badge weight-badge" title="Loading variant information..." style="opacity: 0.3;">🔢</span>
-                            <span class="variant-badge italic-badge" title="Checking for italic..." style="opacity: 0.3;">📝</span>
+                        <div class="font-category">
+                            ${font.category}
+                            <span class="font-variants">
+                                <!-- Variant badges will be added dynamically -->
+                                <!-- Fallback badges in case JavaScript fails -->
+                                <span class="variant-badge weight-badge" title="Loading variant information..." style="opacity: 0.3;">🔢</span>
+                                <span class="variant-badge italic-badge" title="Checking for italic..." style="opacity: 0.3;">📝</span>
+                            </span>
                         </div>
                         <div style="position: relative;">
                             <div class="font-preview" id="${previewId}"

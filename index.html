@@ -1918,6 +1918,15 @@ ${additionalClasses}
             
             // Get all visible font cards
             const fontCards = document.querySelectorAll('.font-card:not(.hidden)');
+            console.log(`Found ${fontCards.length} visible font cards`);
+            
+            if (fontCards.length === 0) {
+                console.warn('⚠️ No visible font cards found - cannot add variant badges');
+                return;
+            }
+            
+            // Get all visible font cards
+            const fontCards = document.querySelectorAll('.font-card:not(.hidden)');
             
             for (const card of fontCards) {
                 const fontName = card.dataset.fontName;
@@ -1970,6 +1979,7 @@ ${additionalClasses}
                         if (variantBadges) {
                             // Clear existing badges
                             variantBadges.innerHTML = '';
+                            console.log(`📋 Adding badges for ${fontName}: weights=${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, italic=${hasItalic}`);
                             
                             // Add weight badge if multiple weights available
                             if (hasMultipleWeights) {
@@ -2018,6 +2028,13 @@ ${additionalClasses}
                 } catch (error) {
                     console.error(`❌ Error detecting variants for ${fontName}:`, error);
                 }
+            }
+            
+            // Check if any badges were added
+            const allBadges = document.querySelectorAll('.variant-badge');
+            console.log(`📊 Total variant badges added: ${allBadges.length}`);
+            if (allBadges.length === 0) {
+                console.warn('⚠️ No variant badges were added - check if variant detection worked');
             }
         }
 

@@ -585,10 +585,10 @@ h1 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Font variant badges - now inline with category */
+/* Font variant badges - three separate tags */
 .font-variants {
     display: inline-flex;
-    gap: 8px;
+    gap: 6px;
     margin-left: 8px;
     height: 16px;
     flex-wrap: wrap;
@@ -598,15 +598,18 @@ h1 {
 .variant-badge {
     display: inline-block;
     padding: 2px 6px;
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 11px;
+    line-height: 14px;
     text-align: center;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    color: #666;
-    opacity: 0.8;
-    transition: all 0.2s;
-    cursor: default;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+    color: #555;
+    border: 1px solid #e0e0e0;
+}
+
+.variant-badge.italic {
+    font-style: italic;
+    border-color: #ccc;
 }
 
 .variant-badge {

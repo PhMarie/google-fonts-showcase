@@ -1958,9 +1958,9 @@ async function detectAndShowFontVariants() {
                     }
                 }
                 
-                // Determine if we have multiple weights
-                const hasMultipleWeights = availableWeights.size > 1 || 
-                    (availableWeights.size === 1 && !availableWeights.has(400));
+                // Determine if we have multiple weights (always true if we have any weights)
+                const hasMultipleWeights = availableWeights.size > 1;
+                const hasOnlyDefaultWeight = availableWeights.size === 1 && availableWeights.has(400);
                 
                 // Update variant badges
                 const variantBadges = card.querySelector('.font-variants');
@@ -1968,11 +1968,12 @@ async function detectAndShowFontVariants() {
                     variantBadges.innerHTML = '';
                     
                     // Add weight badge if multiple weights available
+                    // Always show weight badge, but with different tooltips
+                    const weightBadge = document.createElement('span');
+                    weightBadge.className = 'variant-badge weight-badge' + (hasMultipleWeights ? ' active' : '');
+                    
                     if (hasMultipleWeights) {
-                        const weightBadge = document.createElement('span');
-                        weightBadge.className = 'variant-badge weight-badge active';
-                        
-                        // Create detailed tooltip
+                        // Multiple weights: show all available
                         const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
                         const weightNames = [];
                         
@@ -1992,11 +1993,21 @@ async function detectAndShowFontVariants() {
                         });
                         
                         weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
-                        weightBadge.textContent = '🔢';
-                        variantBadges.appendChild(weightBadge);
+                    } else if (hasOnlyDefaultWeight) {
+                        // Only default weight: show simple message
+                        weightBadge.title = 'Single weight: Regular (400)';
+                        weightBadge.style.opacity = '0.5'; // Make it lighter for single weight
+                    } else {
+                        // Other single weight: show it
+                        const otherWeight = Array.from(availableWeights)[0];
+                        let weightName = otherWeight.toString();
+                        if (otherWeight === 700) weightName = 'Bold (700)';
+                        weightBadge.title = `Single weight: ${weightName}`;
                     }
                     
-                    // Add italic badge if italic available
+                    weightBadge.textContent = '🔢';
+                    variantBadges.appendChild(weightBadge);
+
                     if (hasItalic) {
                         const italicBadge = document.createElement('span');
                         italicBadge.className = 'variant-badge italic-badge active';

@@ -1967,53 +1967,47 @@ async function detectAndShowFontVariants() {
                 if (variantBadges) {
                     variantBadges.innerHTML = '';
                     
-                    // Add weight badge if multiple weights available
-                    // Always show weight badge, but with different tooltips
+                    // Create weight badge with text (e.g., "2 weights", "1 weight")
+                    const weightCount = availableWeights.size;
                     const weightBadge = document.createElement('span');
-                    weightBadge.className = 'variant-badge weight-badge' + (hasMultipleWeights ? ' active' : '');
-                    
-                    if (hasMultipleWeights) {
-                        // Multiple weights: show all available
-                        const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
-                        const weightNames = [];
-                        
-                        sortedWeights.forEach(weight => {
-                            switch(weight) {
-                                case 100: weightNames.push('Thin (100)'); break;
-                                case 200: weightNames.push('Extra Light (200)'); break;
-                                case 300: weightNames.push('Light (303)'); break;
-                                case 400: weightNames.push('Regular (400)'); break;
-                                case 500: weightNames.push('Medium (500)'); break;
-                                case 600: weightNames.push('SemiBold (600)'); break;
-                                case 700: weightNames.push('Bold (700)'); break;
-                                case 800: weightNames.push('Extra Bold (800)'); break;
-                                case 900: weightNames.push('Black (900)'); break;
-                                default: weightNames.push(`${weight}`);
-                            }
-                        });
-                        
-                        weightBadge.title = `Available weights: ${weightNames.join(', ')}`;
-                    } else if (hasOnlyDefaultWeight) {
-                        // Only default weight: show simple message
-                        weightBadge.title = 'Single weight: Regular (400)';
-                        weightBadge.style.opacity = '0.5'; // Make it lighter for single weight
-                    } else {
-                        // Other single weight: show it
-                        const otherWeight = Array.from(availableWeights)[0];
-                        let weightName = otherWeight.toString();
-                        if (otherWeight === 700) weightName = 'Bold (700)';
-                        weightBadge.title = `Single weight: ${weightName}`;
-                    }
-                    
-                    weightBadge.textContent = '🔢';
+                    weightBadge.className = 'variant-badge weight-badge' + (weightCount > 1 ? ' active' : '');
+                    weightBadge.textContent = weightCount + (weightCount > 1 ? ' weights' : ' weight');
+                    weightBadge.title = getWeightTooltip(availableWeights);
                     variantBadges.appendChild(weightBadge);
-
+                    
+                    // Create italic badge with text if available
                     if (hasItalic) {
                         const italicBadge = document.createElement('span');
                         italicBadge.className = 'variant-badge italic-badge active';
+                        italicBadge.textContent = 'italic';
+                        italicBadge.style.fontStyle = 'italic';
                         italicBadge.title = 'Italic style available';
-                        italicBadge.textContent = '📝';
                         variantBadges.appendChild(italicBadge);
+                    }
+                }
+                
+                // Helper function to generate weight tooltip
+                function getWeightTooltip(weights) {
+                    const sortedWeights = Array.from(weights).sort((a, b) => a - b);
+                    const weightNames = [];
+                    
+                    sortedWeights.forEach(weight => {
+                        switch(weight) {
+                            case 100: weightNames.push('Thin (100)'); break;
+                            case 200: weightNames.push('Extra Light (200)'); break;
+                            case 300: weightNames.push('Light (303)'); break;
+                            case 400: weightNames.push('Regular (400)'); break;
+                            case 500: weightNames.push('Medium (500)'); break;
+                            case 600: weightNames.push('SemiBold (600)'); break;
+                            case 700: weightNames.push('Bold (700)'); break;
+                            case 800: weightNames.push('Extra Bold (800)'); break;
+                            case 900: weightNames.push('Black (900)'); break;
+                            default: weightNames.push(`${weight}`);
+                        }
+                    });
+                    
+                    return `Available: ${weightNames.join(', ')}`;
+                }
                     }
                     
                     console.log(`✅ ${fontName}: Weights: ${Array.from(availableWeights).sort((a, b) => a - b).join(', ')}, Italic: ${hasItalic}`);

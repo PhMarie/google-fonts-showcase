@@ -366,14 +366,22 @@
 
             // Reset search box when clicking outside (blur event)
             fontSearch.addEventListener('blur', () => {
-                // Always reset search box to empty when clicking outside
-                // This provides the cleanest UX by completely clearing the field
-                fontSearch.value = '';
-
-                // Hide clear button
-                if (clearSearchBtn) {
-                    clearSearchBtn.style.display = 'none';
+                // Only reset search box if it contains only the prefix (no actual search term)
+                // This preserves active searches while cleaning up empty search boxes
+                const currentValue = fontSearch.value;
+                const hasSearchTerm = currentValue && currentValue.includes(':') && 
+                                     currentValue.split(':')[1].trim().length > 0;
+                
+                if (!hasSearchTerm) {
+                    // Reset only if no active search term
+                    fontSearch.value = '';
+                    
+                    // Hide clear button
+                    if (clearSearchBtn) {
+                        clearSearchBtn.style.display = 'none';
+                    }
                 }
+                // If there's an active search term, preserve it
             });
 
             // Add Escape key support for search reset

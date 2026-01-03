@@ -1352,14 +1352,14 @@
             }).join(', ');
 
             return `
-                <div class="font-card favorites-summary-card" onclick="event.stopPropagation();">
+                <div class="font-card favorites-summary-card">
                     <div class="font-name" style="font-family: inherit; color: inherit;">
                         ❤️ ${favoriteFonts.size} Favorites
                     </div>
                     <div class="favorites-list-simple">
                         ${favoriteNames}
                     </div>
-                    <button class="btn-primary copy-all-favorites-btn" style="margin-top: 15px;">
+                    <button class="btn-primary copy-all-favorites-btn" style="margin-top: 15px; cursor: pointer;" onclick="copyAllFavoritesCSS(); event.stopPropagation();">
                         Copy All Favs CSS
                     </button>
                 </div>
@@ -2294,7 +2294,7 @@ async function detectAndShowFontVariants() {
             }
 
             // Get all favorite fonts from the set
-            const favoriteFontNames = Array.from(favorites);
+            const favoriteFontNames = Array.from(favorites).sort(); // Sort alphabetically
             
             // Find the full font objects to get their CSS
             const favoriteFonts = allFonts.filter(font => favoriteFontNames.includes(font.name));
@@ -2304,24 +2304,129 @@ async function detectAndShowFontVariants() {
                 return;
             }
 
-            // Generate CSS for all favorite fonts
-            const cssOutput = favoriteFonts.map(font => {
-                return `/* ${font.name} - ${font.category} */
+            // Generate complete CSS for all favorite fonts with variables and classes
+            let completeCSS = `/* Google Fonts Favorites Collection */
+/* Generated: ${favoriteFonts.length} favorite fonts */
+`;
+
+            // Generate CSS for each font using local data
+            favoriteFonts.forEach(font => {
+                const fontNameKebab = font.name.toLowerCase().replace(/ /g, '-');
+                const fontNameUrl = font.name.replace(/ /g, '+');
+                
+                // Get all available weights from variants
+                const availableWeights = new Set([400]); // Default to 400
+                const hasItalic = false;
+                
+                // Check variants to find all available weights
+                if (font.variants && font.variants.normal) {
+                    Object.keys(font.variants.normal).forEach(weight => {
+                        availableWeights.add(parseInt(weight));
+                    });
+                }
+                
+                if (font.variants && font.variants.italic) {
+                    Object.keys(font.variants.italic).forEach(weight => {
+                        availableWeights.add(parseInt(weight));
+                    });
+                }
+                
+                // Generate @font-face rules for each available weight
+                let fontFaceRules = '';
+                const sortedWeights = Array.from(availableWeights).sort((a, b) => a - b);
+                
+                sortedWeights.forEach(weight => {
+                    // Get WOFF2 URL for this weight
+                    const weightVariant = font.variants?.normal?.[weight];
+                    const italicVariant = font.variants?.italic?.[weight];
+                    
+                    if (weightVariant) {
+                        const woff2Url = weightVariant.url?.woff2;
+                        if (woff2Url) {
+                            fontFaceRules += `
 @font-face {
     font-family: '${font.name}';
     font-style: normal;
-    font-weight: 400;
+    font-weight: ${weight};
     font-display: swap;
-    src: url(${font.files.regular}) format('woff2');
+    src: url(${woff2Url}) format('woff2');
 }`;
-            }).join('\n\n');
+                        }
+                    }
+                    
+                    if (italicVariant) {
+                        const woff2Url = italicVariant.url?.woff2;
+                        if (woff2Url) {
+                            fontFaceRules += `
+@font-face {
+    font-family: '${font.name}';
+    font-style: italic;
+    font-weight: ${weight};
+    font-display: swap;
+    src: url(${woff2Url}) format('woff2');
+}`;
+                        }
+                    }
+                });
+                
+                // Generate CSS classes for all weights
+                let cssClasses = '';
+                const weightNames = {
+                    100: 'thin',
+                    200: 'extra-light',
+                    300: 'light',
+                    400: 'regular',
+                    500: 'medium',
+                    600: 'semibold',
+                    700: 'bold',
+                    800: 'extra-bold',
+                    900: 'black'
+                };
+                
+                sortedWeights.forEach(weight => {
+                    const weightName = weightNames[weight] || `weight-${weight}`;
+                    
+                    // Normal class
+                    cssClasses += `
+.${fontNameKebab}-${weightName} {
+    font-family: var(--font-${fontNameKebab});
+    font-weight: ${weight};
+}`;
+                    
+                    // Italic class if italic variant exists
+                    if (font.variants?.italic?.[weight]) {
+                        cssClasses += `
+.${fontNameKebab}-${weightName}-italic {
+    font-family: var(--font-${fontNameKebab});
+    font-weight: ${weight};
+    font-style: italic;
+}`;
+                    }
+                });
+                
+                // Add complete CSS for this font
+                completeCSS += `
+/* ${font.name} - ${font.category} */
+/* https://fonts.google.com/specimen/${fontNameUrl} */
 
-            // Copy to clipboard
-            navigator.clipboard.writeText(cssOutput).then(() => {
+${fontFaceRules}
+
+/* CSS Variables */
+:root {
+    --font-${fontNameKebab}: "${font.name}", ${font.category};
+}
+
+/* CSS Classes */
+${cssClasses}
+`;
+            });
+
+            // Copy complete CSS to clipboard
+            navigator.clipboard.writeText(completeCSS).then(() => {
                 // Show success notification
                 const notification = document.createElement('div');
                 notification.className = 'font-selection-notification';
-                notification.textContent = `✅ Copied ${favoriteFonts.length} favorite fonts CSS to clipboard!`;
+                notification.textContent = `✅ Copied complete CSS for ${favoriteFonts.length} favorite fonts!`;
                 document.body.appendChild(notification);
                 
                 // Animate and remove notification

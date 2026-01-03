@@ -1359,7 +1359,7 @@
                     <div class="favorites-list-simple">
                         ${favoriteNames}
                     </div>
-                    <button class="btn-primary copy-all-favorites-btn" style="margin-top: 15px; cursor: pointer;" onclick="copyAllFavoritesCSS(); event.stopPropagation();">
+                    <button class="btn btn-primary" onclick="copyAllFavoritesCSS(); event.stopPropagation();" style="margin-top: 15px;">
                         Copy All Favs CSS
                     </button>
                 </div>
@@ -2305,7 +2305,7 @@ async function detectAndShowFontVariants() {
             }
 
             // Generate complete CSS for all favorite fonts with variables and classes
-            let completeCSS = `/* Google Fonts Favorites Collection */
+            let completeCSS = `/* Google Fonts Showcase Favs Collection */
 /* Generated: ${favoriteFonts.length} favorite fonts */
 `;
 

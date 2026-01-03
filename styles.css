@@ -421,44 +421,67 @@ header {
 }
 }
 
-h1 {
-    background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+h1,
+body h1,
+header h1,
+.container h1 {
+    background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
     margin-bottom: 10px;
     font-size: 28px;
     display: inline-block;
 }
 
 @media (max-width: 768px) {
-    h1 {
-        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
+    h1,
+    body h1,
+    header h1,
+    .container h1 {
+        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        color: transparent !important;
         font-size: 24px;
         display: inline-block;
     }
 }
 
 @media (max-width: 552px) {
-    h1 {
-        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
+    h1,
+    body h1,
+    header h1,
+    .container h1 {
+        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        color: transparent !important;
         font-size: 20px;
         display: inline-block;
     }
 }
 
+/* Light theme gradient - ensure it works in light mode */
+body:not(.dark-theme) h1,
+body:not(.dark-theme) body h1,
+body:not(.dark-theme) header h1,
+body:not(.dark-theme) .container h1 {
+    background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+}
+
 /* Dark theme gradient variant - blue to violet for consistency */
-.dark-theme h1 {
-    background: linear-gradient(90deg, #8ab4f8 0%, #9370DB 25%, #BA55D3 50%, #DDA0DD 75%, #C71585 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+.dark-theme h1,
+.dark-theme body h1,
+.dark-theme header h1,
+.dark-theme .container h1 {
+    background: linear-gradient(90deg, #8ab4f8 0%, #9370DB 25%, #BA55D3 50%, #DDA0DD 75%, #C71585 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
 }
 
 @media (max-width: 768px) {

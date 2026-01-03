@@ -1248,23 +1248,7 @@ body .font-category,
     flex-wrap: wrap;
 }
 
-.footer-link {
-    color: #4285F4;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s;
-    font-size: 14px;
-}
-
-.footer-link:hover {
-    color: #1a73e8;
-    text-decoration: underline;
-}
-
-.footer-separator {
-    color: #ced4da;
-    font-weight: bold;
-}
+/* Footer link styles removed - no longer needed */
 
 /* Dark Theme Footer Styles */
 .dark-theme .footer-disclaimer {
@@ -1284,17 +1268,7 @@ body .font-category,
     color: #8d99ae;
 }
 
-.dark-theme .footer-link {
-    color: #8ab4f8;
-}
-
-.dark-theme .footer-link:hover {
-    color: #6fa8dc;
-}
-
-.dark-theme .footer-separator {
-    color: #6c757d;
-}
+/* Dark theme footer link styles removed - no longer needed */
 
 /* Responsive Footer */
 @media (max-width: 768px) {

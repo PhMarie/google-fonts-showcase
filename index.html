@@ -42,9 +42,9 @@
 
     <title>Google Fonts Showcase - Browse & Preview 1000+ Web Fonts</title>
 
-    <!-- Favicon with different colors -->
+    <!-- Gradient Favicon with Blue-Violet colors -->
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%234285F4'/><text x='50' y='60' font-family='Arial, sans-serif' font-size='50' fill='white' text-anchor='middle' font-weight='bold'>G</text></svg>"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='gradient' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%234285F4' /><stop offset='50%' stop-color='%239370DB' /><stop offset='100%' stop-color='%239932CC' /></linearGradient></defs><path d='M25 20 C25 10 35 5 45 5 C55 5 65 10 65 20 C65 30 60 35 55 40 C50 45 45 50 40 50 C35 50 30 45 30 40 C30 35 35 30 35 20 C35 15 32 12 30 15 C28 18 25 20 25 25 C25 30 28 35 30 40 C32 45 35 50 40 55 C45 60 55 60 60 55 C65 50 70 45 70 35 C70 25 65 20 60 20 C55 20 50 25 50 30 C50 35 45 40 40 45 C35 50 30 55 30 65 C30 75 35 80 45 80 C55 80 65 75 65 65 C65 55 60 50 55 50 C50 50 45 55 45 65 C45 75 50 80 60 80 C70 80 75 75 75 65 C75 55 70 50 65 50 C60 50 55 55 55 65 C55 75 60 80 70 80 C80 80 85 75 85 65 C85 55 80 50 75 50 C70 50 65 55 65 65 C65 75 70 80 80 80 C90 80 95 75 95 65 C95 55 90 50 85 50 C80 50 75 55 75 65 C75 75 80 80 90 80 Z' fill='url(%23gradient)' /></svg>"
         type="image/svg+xml">
 
     <!-- External CSS file -->
@@ -1308,12 +1308,12 @@
                             <div class="font-name${isAllCaps ? ' cap-font-name' : ''}" style="font-family: '${font.name}', ${getFallbackFont(font.category)}; line-height: normal; vertical-align: baseline;">${font.name}</div>
                         </div>
                         <div class="favorite-heart" data-font-name="${font.name}">♥</div>
-                        <div class="font-category">${font.category}</div>
-                        <div class="font-variants">
+                        <div class="font-category-container">
+                            <div class="font-category">${font.category}</div>
                             <!-- Variant badges will be added dynamically -->
                             <!-- Fallback badges in case JavaScript fails -->
-                            <span class="variant-badge weight-badge" title="Loading..." style="opacity: 0.3;">weights</span>
-                            <span class="variant-badge italic-badge" title="Loading..." style="opacity: 0.3;">italic</span>
+                            <span class="weights-badge" title="Loading..." style="opacity: 0.3;">weights</span>
+                            <span class="italic-badge" title="Loading..." style="opacity: 0.3;">italic</span>
                         </div>
                         <div style="position: relative;">
                             <div class="font-preview" id="${previewId}"
@@ -1962,26 +1962,28 @@ async function detectAndShowFontVariants() {
                 const hasOnlyDefaultWeight = availableWeights.size === 1 && availableWeights.has(400);
                 
                 // Update variant badges
-                const variantBadges = card.querySelector('.font-variants');
-                if (variantBadges) {
-                    variantBadges.innerHTML = '';
+                const fontCategoryContainer = card.querySelector('.font-category-container');
+                if (fontCategoryContainer) {
+                    // Remove existing variant badges
+                    const existingBadges = fontCategoryContainer.querySelectorAll('.weights-badge, .italic-badge');
+                    existingBadges.forEach(badge => badge.remove());
                     
                     // Create weight badge with text (e.g., "2 weights", "1 weight")
                     const weightCount = availableWeights.size;
                     const weightBadge = document.createElement('span');
-                    weightBadge.className = 'variant-badge weight-badge' + (weightCount > 1 ? ' active' : '');
+                    weightBadge.className = 'weights-badge' + (weightCount > 1 ? ' active' : '');
                     weightBadge.textContent = weightCount + (weightCount > 1 ? ' weights' : ' weight');
                     weightBadge.title = getWeightTooltip(availableWeights);
-                    variantBadges.appendChild(weightBadge);
+                    fontCategoryContainer.appendChild(weightBadge);
                     
                     // Create italic badge with text if available
                     if (hasItalic) {
                         const italicBadge = document.createElement('span');
-                        italicBadge.className = 'variant-badge italic-badge active';
+                        italicBadge.className = 'italic-badge active';
                         italicBadge.textContent = 'italic';
                         italicBadge.style.fontStyle = 'italic';
                         italicBadge.title = 'Italic style available';
-                        variantBadges.appendChild(italicBadge);
+                        fontCategoryContainer.appendChild(italicBadge);
                     }
                 }
                 
@@ -2011,7 +2013,7 @@ async function detectAndShowFontVariants() {
                 }
             });
             
-            const allBadges = document.querySelectorAll('.variant-badge');
+            const allBadges = document.querySelectorAll('.weights-badge, .italic-badge');
             console.log(`📊 Total variant badges added: ${allBadges.length}`);
         })
         .catch(error => {
@@ -2077,7 +2079,7 @@ async function detectAndShowFontVariants() {
 
         // Enhance tooltips for better visibility
         function enhanceTooltips() {
-            const badges = document.querySelectorAll('.variant-badge');
+            const badges = document.querySelectorAll('.weights-badge, .italic-badge');
             badges.forEach(badge => {
                 // Ensure title attribute is set
                 if (!badge.title && badge.hasAttribute('data-tooltip')) {
@@ -2119,6 +2121,28 @@ async function detectAndShowFontVariants() {
             }
         }, 100);
     </script>
+    
+    <!-- Footer Disclaimer -->
+    <footer class="footer-disclaimer">
+        <div class="footer-content">
+            <p class="disclaimer-text">
+                <strong>Google Fonts Showcase</strong> is a personal demo project designed to test and demonstrate 
+                <strong>Mistral Vibe AI</strong> coding capabilities using the <strong>Google Fonts API</strong>. 
+                This project is not affiliated with or endorsed by Google. It may contain errors, inaccuracies, 
+                or experimental features as it serves as a development and testing platform. 
+            </p>
+            <p class="last-updated">
+                Last updated: January 3, 2026
+            </p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">About</a>
+                <span class="footer-separator">•</span>
+                <a href="#" class="footer-link">GitHub</a>
+                <span class="footer-separator">•</span>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

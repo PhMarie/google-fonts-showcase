@@ -1,0 +1,52 @@
+/* CARD TAGS STABLE BACKUP - DO NOT MODIFY */
+/* This file contains the working card tag styles */
+/* If card tags break again, copy these styles to styles.css */
+
+/* ===== CARD TAGS STYLES ===== */
+.font-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #e8f0fe;
+    color: #4285F4;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    /* Prevent overriding */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Dark theme support */
+.dark-theme .font-category {
+    background-color: #4a5a6a;
+    color: #8ab4f8;
+}
+
+/* ===== PROTECTIVE RULES ===== */
+/* These rules prevent common issues */
+body .font-category,
+.font-card .font-category,
+[class*="font"] .font-category {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+/* ===== FALLBACK RULES ===== */
+/* If content is missing, use data attribute */
+.font-category:empty::before {
+    content: attr(data-fallback-category) !important;
+}
+
+/* ===== DEBUGGING HELP ===== */
+/* Uncomment to debug card tag issues */
+/*
+.font-category {
+    outline: 2px solid red !important;
+}
+*/

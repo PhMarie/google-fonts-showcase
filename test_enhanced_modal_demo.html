@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enhanced Modal Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .demo-container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background-color: #3367D6;
+        }
+        
+        .highlight {
+            background-color: #fffde7;
+            padding: 15px;
+            border-left: 3px solid #ffc107;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enhanced Modal Demo</h1>
+    
+    <div class="demo-container">
+        <h2>🎯 How to See the Enhanced Modal</h2>
+        
+        <div class="highlight">
+            <h3>The enhanced modal appears in these situations:</h3>
+            <ol>
+                <li><strong>Variable fonts</strong>: Always shows enhanced modal with WOFF2 download links</li>
+                <li><strong>Regular fonts (fallback)</strong>: Shows enhanced modal when clipboard copy fails</li>
+                <li><strong>Manual trigger</strong>: Use the button below to see the enhanced modal</li>
+            </ol>
+        </div>
+        
+        <h3>✅ Enhanced Modal Features:</h3>
+        <ul>
+            <li>📏 <strong>Bigger size</strong>: 900px × 90vh (was 800px × 80vh)</li>
+            <li>🎯 <strong>Clear title</strong>: "CSS for FontName copied to clipboard"</li>
+            <li>✅ <strong>Success message</strong>: "CSS has been successfully copied to your clipboard!"</li>
+            <li>📥 <strong>Download section</strong>: WOFF2 file links with copy buttons</li>
+            <li>🎨 <strong>Enhanced styling</strong>: Professional design with proper spacing</li>
+        </ul>
+        
+        <button onclick="showDemoModal()">Show Enhanced Modal Demo</button>
+        
+        <p style="margin-top: 15px; color: #666;">
+            <strong>Note:</strong> This demo shows what the enhanced modal looks like. 
+            In the actual application, it appears automatically for variable fonts or when clipboard copy fails.
+        </p>
+    </div>
+    
+    <div class="demo-container">
+        <h2>🔍 When Does the Enhanced Modal Appear?</h2>
+        
+        <h3>Variable Fonts (Always Shows Enhanced Modal)</h3>
+        <p>Fonts like Inter, Roboto Flex, etc. that support variable font technology will:</p>
+        <ol>
+            <li>Show the enhanced modal immediately when clicking "Copy CSS"</li>
+            <li>Include WOFF2 download links for the variable font files</li>
+            <li>Allow copying CSS and individual WOFF2 URLs</li>
+        </ol>
+        
+        <h3>Regular Fonts (Shows Enhanced Modal on Fallback)</h3>
+        <p>Standard fonts will:</p>
+        <ol>
+            <li>Try to copy CSS to clipboard automatically</li>
+            <li>Show success alert if copy works</li>
+            <li>Show enhanced modal with WOFF2 links if copy fails (fallback)</li>
+        </ol>
+        
+        <h3>Testing the Modal</h3>
+        <p>To test the enhanced modal:</p>
+        <ol>
+            <li>Find a variable font (e.g., Inter, Roboto Flex)</li>
+            <li>Click "Copy CSS" button</li>
+            <li>Observe the enhanced modal with all features</li>
+        </ol>
+    </div>
+    
+    <div class="demo-container">
+        <h2>📊 Feature Comparison</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f5f8ff;">
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">Feature</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">Before</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #eee;">After</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>Modal Size</strong></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">800px × 80vh</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">900px × 90vh</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>Title</strong></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">"CSS for FontName"</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">"CSS for FontName copied to clipboard"</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>Success Message</strong></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">❌ None</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">✅ "CSS has been successfully copied!"</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>Download Section</strong></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">❌ None</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">✅ WOFF2 links with copy buttons</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>WOFF2 Extraction</strong></td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">❌ None</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">✅ Automatic URL extraction</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        function showDemoModal() {
+            // Create a sample CSS with WOFF2 URLs
+            const sampleCSS = `
+/* Roboto - sans-serif */
+/* https://fonts.google.com/specimen/Roboto */
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/r/roboto/v27/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format('woff2');
+    unicode-range: U+0000-00FF;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: italic;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/r/roboto/v27/KFOkCnqEu92Fr1Mu51xFIzY.woff2) format('woff2');
+    unicode-range: U+0000-00FF;
+}
+
+/* CSS Variables */
+:root {
+    --font-roboto: "Roboto", sans-serif;
+}
+
+/* CSS Classes */
+.roboto-regular {
+    font-family: var(--font-roboto);
+    font-weight: 400;
+}
+            `;
+            
+            const woff2Urls = [
+                'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2',
+                'https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1Mu51xFIzY.woff2'
+            ];
+             
+            const woff2Urls = [
+=======
+            const woff2Urls = [
+                'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2',
+                'https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1Mu51xFIzY.woff2'
+            ];
+=======
+            const woff2Urls = [
+                'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2',
+                'https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1Mu51xFIzY.woff2'
+            ];
+            
+            // Show the enhanced modal
+            showCSSInModal(sampleCSS, 'Roboto', false, woff2Urls);
+            
+            alert('✅ Enhanced modal should now be visible! Check for:' +
+                  '\n1. Bigger size (900px wide)' +
+                  '\n2. Title: "CSS for Roboto copied to clipboard"' +
+                  '\n3. Success message with checkmark' +
+                  '\n4. Download section with WOFF2 links' +
+                  '\n5. Copy URL buttons that work');
+        }
+        
+        // Copy the modal function from index.html for this demo
+        function showCSSInModal(css, fontName, isFallback = false, woff2Urls = []) {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            modal.style.zIndex = '10000';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.padding = '20px';
+            modal.style.boxSizing = 'border-box';
+
+            // Create modal content - BIGGER SIZE
+            const content = document.createElement('div');
+            content.style.backgroundColor = 'white';
+            content.style.padding = '30px';
+            content.style.borderRadius = '12px';
+            content.style.maxWidth = '900px';
+            content.style.width = '90%';
+            content.style.maxHeight = '90vh';
+            content.style.overflow = 'auto';
+            content.style.position = 'relative';
+            content.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+
+            // Create close button - enhanced
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '×';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '15px';
+            closeButton.style.right = '15px';
+            closeButton.style.background = 'none';
+            closeButton.style.border = 'none';
+            closeButton.style.fontSize = '28px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.color = '#666';
+            closeButton.style.width = '32px';
+            closeButton.style.height = '32px';
+            closeButton.style.display = 'flex';
+            closeButton.style.alignItems = 'center';
+            closeButton.style.justifyContent = 'center';
+            closeButton.onclick = function () {
+                document.body.removeChild(modal);
+            };
+
+            // Create title - enhanced
+            const title = document.createElement('h2');
+            title.textContent = `CSS for ${fontName} copied to clipboard`;
+            title.style.marginTop = '0';
+            title.style.color = '#4285F4';
+            title.style.fontSize = '24px';
+            title.style.fontWeight = '600';
+            title.style.marginBottom = '10px';
+
+            // Create success message
+            const successMessage = document.createElement('p');
+            successMessage.textContent = '✅ CSS has been successfully copied to your clipboard!';
+            successMessage.style.color = '#2E7D32';
+            successMessage.style.fontSize = '16px';
+            successMessage.style.fontWeight = '500';
+            successMessage.style.marginBottom = '20px';
+
+            // Create CSS textarea - enhanced
+            const cssTextarea = document.createElement('textarea');
+            cssTextarea.value = css;
+            cssTextarea.style.width = '100%';
+            cssTextarea.style.height = '350px';
+            cssTextarea.style.fontFamily = 'monospace';
+            cssTextarea.style.fontSize = '14px';
+            cssTextarea.style.padding = '12px';
+            cssTextarea.style.border = '2px solid #e8f0fe';
+            cssTextarea.style.borderRadius = '8px';
+            cssTextarea.style.resize = 'vertical';
+            cssTextarea.style.marginBottom = '25px';
+            cssTextarea.style.backgroundColor = '#f9f9f9';
+
+            // Create instructions section
+            const instructions = document.createElement('div');
+            instructions.style.marginBottom = '25px';
+            instructions.style.padding = '15px';
+            instructions.style.backgroundColor = '#f5f8ff';
+            instructions.style.borderRadius = '8px';
+            instructions.style.borderLeft = '4px solid #4285F4';
+            
+            const instructionsTitle = document.createElement('strong');
+            instructionsTitle.textContent = 'How to use this CSS:';
+            instructionsTitle.style.display = 'block';
+            instructionsTitle.style.marginBottom = '10px';
+            instructionsTitle.style.color = '#4285F4';
+            
+            const instructionsList = document.createElement('ul');
+            instructionsList.style.paddingLeft = '20px';
+            instructionsList.style.margin = '0';
+            instructionsList.style.color = '#555';
+            
+            const step1 = document.createElement('li');
+            step1.textContent = 'The CSS has been automatically copied to your clipboard';
+            
+            const step2 = document.createElement('li');
+            step2.textContent = 'Paste it into your stylesheet (Ctrl+V or Cmd+V)';
+            
+            const step3 = document.createElement('li');
+            step3.textContent = 'Use the provided class names in your HTML elements';
+            
+            const step4 = document.createElement('li');
+            step4.textContent = 'The font will load automatically from Google Fonts';
+            
+            instructionsList.appendChild(step1);
+            instructionsList.appendChild(step2);
+            instructionsList.appendChild(step3);
+            instructionsList.appendChild(step4);
+            
+            instructions.appendChild(instructionsTitle);
+            instructions.appendChild(instructionsList);
+
+            // Create Download section with WOFF2 links
+            if (woff2Urls && woff2Urls.length > 0) {
+                const downloadSection = document.createElement('div');
+                downloadSection.style.marginTop = '30px';
+                downloadSection.style.paddingTop = '20px';
+                downloadSection.style.borderTop = '2px solid #e8f0fe';
+                
+                const downloadTitle = document.createElement('h3');
+                downloadTitle.textContent = '📥 Download WOFF2 Files';
+                downloadTitle.style.color = '#4285F4';
+                downloadTitle.style.marginTop = '0';
+                downloadTitle.style.marginBottom = '15px';
+                downloadTitle.style.fontSize = '18px';
+                
+                const downloadDescription = document.createElement('p');
+                downloadDescription.textContent = 'Direct download links for the WOFF2 font files used in the @font-face declaration:';
+                downloadDescription.style.color = '#666';
+                downloadDescription.style.marginBottom = '15px';
+                downloadDescription.style.fontSize = '14px';
+                
+                const downloadLinks = document.createElement('div');
+                downloadLinks.style.display = 'flex';
+                downloadLinks.style.flexDirection = 'column';
+                downloadLinks.style.gap = '10px';
+                
+                woff2Urls.forEach((url, index) => {
+                    const linkContainer = document.createElement('div');
+                    linkContainer.style.display = 'flex';
+                    linkContainer.style.alignItems = 'center';
+                    linkContainer.style.gap = '8px';
+                    
+                    const linkIcon = document.createElement('span');
+                    linkIcon.textContent = '🔗';
+                    linkIcon.style.fontSize = '16px';
+                    
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.textContent = url.substring(0, 50) + (url.length > 50 ? '...' : '');
+                    link.style.color = '#1976D2';
+                    link.style.textDecoration = 'none';
+                    link.style.fontSize = '13px';
+                    link.style.fontFamily = 'monospace';
+                    link.style.wordBreak = 'break-all';
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copy URL';
+                    copyButton.style.padding = '4px 12px';
+                    copyButton.style.fontSize = '12px';
+                    copyButton.style.backgroundColor = '#e8f0fe';
+                    copyButton.style.color = '#4285F4';
+                    copyButton.style.border = '1px solid #4285F4';
+                    copyButton.style.borderRadius = '4px';
+                    copyButton.style.cursor = 'pointer';
+                    copyButton.onclick = function() {
+                        navigator.clipboard.writeText(url).then(() => {
+                            copyButton.textContent = '✅ Copied!';
+                            setTimeout(() => {
+                                copyButton.textContent = 'Copy URL';
+                            }, 2000);
+                        });
+                    };
+                    
+                    linkContainer.appendChild(linkIcon);
+                    linkContainer.appendChild(link);
+                    linkContainer.appendChild(copyButton);
+                    downloadLinks.appendChild(linkContainer);
+                });
+                
+                const downloadNote = document.createElement('p');
+                downloadNote.textContent = 'Note: These are direct links to Google Fonts CDN. For self-hosting, download and serve these files from your own server.';
+                downloadNote.style.fontSize = '12px';
+                downloadNote.style.color = '#777';
+                downloadNote.style.marginTop = '15px';
+                downloadNote.style.fontStyle = 'italic';
+                
+                downloadSection.appendChild(downloadTitle);
+                downloadSection.appendChild(downloadDescription);
+                downloadSection.appendChild(downloadLinks);
+                downloadSection.appendChild(downloadNote);
+                
+                content.appendChild(downloadSection);
+            }
+
+            // Assemble modal
+            content.appendChild(closeButton);
+            content.appendChild(title);
+            content.appendChild(successMessage);
+            content.appendChild(cssTextarea);
+            content.appendChild(instructions);
+            modal.appendChild(content);
+
+            // Add modal to body
+            document.body.appendChild(modal);
+
+            // Auto-select CSS text
+            cssTextarea.select();
+        }
+    </script>
+</body>
+</html>

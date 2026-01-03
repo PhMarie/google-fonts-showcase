@@ -54,10 +54,14 @@ body.dark-theme {
     color: #8ab4f8; /* Lighter blue for dark theme */
 }
 
-.dark-theme .font-category {
+.dark-theme .font-category,
+.dark-theme .weights-badge,
+.dark-theme .italic-badge {
     background-color: #4a5a6a;
     color: #8ab4f8;
 }
+
+
 
 .dark-theme .font-preview {
     color: #e0e0e0;
@@ -417,19 +421,53 @@ header {
 }
 
 h1 {
-    color: #4285F4;
+    background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     margin-bottom: 10px;
     font-size: 28px;
+    display: inline-block;
 }
 
 @media (max-width: 768px) {
     h1 {
+        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
         font-size: 24px;
+        display: inline-block;
     }
 }
 
 @media (max-width: 552px) {
     h1 {
+        background: linear-gradient(90deg, #4285F4 0%, #6A5ACD 25%, #9370DB 50%, #BA55D3 75%, #9932CC 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-size: 20px;
+        display: inline-block;
+    }
+}
+
+/* Dark theme gradient variant - blue to violet for consistency */
+.dark-theme h1 {
+    background: linear-gradient(90deg, #8ab4f8 0%, #9370DB 25%, #BA55D3 50%, #DDA0DD 75%, #C71585 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+@media (max-width: 768px) {
+    .dark-theme h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 552px) {
+    .dark-theme h1 {
         font-size: 20px;
     }
 }
@@ -728,8 +766,71 @@ body .font-card[data-font-category="caps"] .font-name {
     font-size: 12px;
     font-weight: 500;
     margin-bottom: 15px;
+    /* Prevent overriding */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
+/* Protective rules to prevent card tag issues */
+body .font-category,
+.font-card .font-category {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+/* UNIFIED TAG SYSTEM - All tags have same styling as category tag */
+
+/* Category Tag - Original */
+.font-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #e8f0fe;
+    color: #4285F4;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+    margin-bottom: 0;
+    /* Prevent overriding */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Weights Tag - Same style as category tag */
+.weights-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #e8f0fe;
+    color: #4285F4;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+/* Italic Tag - Same style as category tag */
+.italic-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #e8f0fe;
+    color: #4285F4;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+/* Caps Badge - Different color for CAPS (green) */
 .caps-badge {
     display: inline-flex;
     align-items: center;
@@ -743,6 +844,24 @@ body .font-card[data-font-category="caps"] .font-name {
     border: 1px solid #2E7D32;
     height: 18px;
     vertical-align: middle;
+}
+
+/* Container for ALL tags - align them horizontally */
+.font-category-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;  /* Reduced gap for tighter spacing */
+    margin-bottom: 15px;
+}
+
+/* Container for variant badges only */
+.font-variants {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;  /* Reduced gap for tighter spacing */
+    margin-bottom: 0;  /* Remove margin since it's inside category container */
 }
 
 .font-preview {
@@ -1085,4 +1204,110 @@ body .font-card[data-font-category="caps"] .font-name {
 
 .demo-info strong {
     font-weight: bold;
+}
+
+/* Footer Disclaimer Styles */
+.footer-disclaimer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    margin-top: 50px;
+    border-top: 1px solid #e9ecef;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.disclaimer-text {
+    color: #6c757d;
+    margin-bottom: 10px;
+}
+
+.disclaimer-text strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+.last-updated {
+    color: #868e96;
+    font-size: 13px;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-link {
+    color: #4285F4;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.footer-link:hover {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+.footer-separator {
+    color: #ced4da;
+    font-weight: bold;
+}
+
+/* Dark Theme Footer Styles */
+.dark-theme .footer-disclaimer {
+    background-color: #2d2d2d;
+    border-top: 1px solid #444;
+}
+
+.dark-theme .disclaimer-text {
+    color: #adb5bd;
+}
+
+.dark-theme .disclaimer-text strong {
+    color: #e9ecef;
+}
+
+.dark-theme .last-updated {
+    color: #8d99ae;
+}
+
+.dark-theme .footer-link {
+    color: #8ab4f8;
+}
+
+.dark-theme .footer-link:hover {
+    color: #6fa8dc;
+}
+
+.dark-theme .footer-separator {
+    color: #6c757d;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-disclaimer {
+        padding: 15px 0;
+        margin-top: 30px;
+    }
+    
+    .disclaimer-text {
+        font-size: 13px;
+    }
+    
+    .last-updated {
+        font-size: 12px;
+    }
 }

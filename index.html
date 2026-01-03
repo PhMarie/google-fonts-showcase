@@ -1204,8 +1204,13 @@
                 }
 
                 // Filter by search term
-                if (searchTerm && !font.name.toLowerCase().includes(searchTerm)) {
-                    return false;
+                if (searchTerm) {
+                    const fontNameLower = font.name.toLowerCase();
+                    const matches = fontNameLower.includes(searchTerm);
+                    console.log(`Filtering ${font.name}: searchTerm="${searchTerm}", matches=${matches}`);
+                    if (!matches) {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -1285,6 +1290,7 @@
             fontsContainer.innerHTML = fontCardsHTML;
 
             // Add pagination controls at both top and bottom
+            console.log('Adding pagination controls. Filtered fonts:', filteredFonts.length, 'Total pages:', totalPages, 'Search term:', searchTerm);
             addPaginationControls(filteredFonts.length, totalPages, 'top');
             addPaginationControls(filteredFonts.length, totalPages, 'bottom');
 

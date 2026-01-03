@@ -51,7 +51,7 @@ body.dark-theme {
 }
 
 .dark-theme .font-name {
-    color: #8ab4f8; /* Lighter blue for dark theme */
+    color: #EFEFEF; /* Very light grey for better visibility in dark mode */
 }
 
 .dark-theme .font-category,
@@ -1289,6 +1289,10 @@ body .font-category,
     font-size: 14px;
     color: #666;
     margin: 0 10px; /* Reduced from 15px to keep compact */
+}
+
+.dark-theme .pagination-info {
+    color: #ccc; /* Lighter grey for better visibility in dark mode */
 }
 
 @media (max-width: 1200px) and (min-width: 769px) {

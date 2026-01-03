@@ -1303,8 +1303,10 @@
                 if (currentPage > 1) {
                     currentPage--;
                     displayFonts();
-                    // Scroll to top after page change
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Scroll to top after page change with small delay
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
                 }
             });
             paginationContainer.appendChild(prevButton);
@@ -1325,8 +1327,10 @@
                 if (currentPage < totalPages) {
                     currentPage++;
                     displayFonts();
-                    // Scroll to top after page change
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Scroll to top after page change with small delay
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
                 }
             });
             paginationContainer.appendChild(nextButton);

@@ -322,6 +322,8 @@
         function setupEventListeners() {
             // Search functionality
             fontSearch.addEventListener('input', () => {
+                // RESET TO PAGE 1 WHEN SEARCHING
+                currentPage = 1;
                 displayFonts();
                 // Show/hide clear button based on search input
                 if (clearSearchBtn) {

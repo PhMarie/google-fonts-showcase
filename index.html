@@ -1241,7 +1241,17 @@
             const paginatedFonts = filteredFonts.slice(startIndex, endIndex);
 
             // Generate font cards with numbering
-            fontsContainer.innerHTML = paginatedFonts.map((font, index) => createFontCard(font, startIndex + index + 1)).join('');
+            let fontCardsHTML = paginatedFonts.map((font, index) => createFontCard(font, startIndex + index + 1)).join('');
+
+            // Add special favorites summary card if in favorites category and has at least 2 favorites
+            if (currentCategory === 'favorites' && favorites.size >= 2) {
+                // Only show the summary card on the first page
+                if (currentPage === 1) {
+                    fontCardsHTML = createFavoritesSummaryCard(favorites) + fontCardsHTML;
+                }
+            }
+
+            fontsContainer.innerHTML = fontCardsHTML;
 
             // Add pagination controls at both top and bottom
             addPaginationControls(filteredFonts.length, totalPages, 'top');
@@ -1330,6 +1340,30 @@
             } else {
                 fontsContainer.parentNode.insertBefore(paginationContainer, fontsContainer.nextSibling);
             }
+        }
+
+        // Create special favorites summary card
+        function createFavoritesSummaryCard(favoriteFonts) {
+            const favoriteArray = Array.from(favoriteFonts).sort((a, b) => {
+                return a.localeCompare(b); // Tri alphabétique
+            });
+            const favoriteNames = favoriteArray.map(fontName => {
+                return fontName.length > 20 ? fontName.substring(0, 17) + '...' : fontName;
+            }).join(', ');
+
+            return `
+                <div class="font-card favorites-summary-card" onclick="event.stopPropagation();">
+                    <div class="font-name" style="font-family: inherit; color: inherit;">
+                        ❤️ ${favoriteFonts.size} Favorites
+                    </div>
+                    <div class="favorites-list-simple">
+                        ${favoriteNames}
+                    </div>
+                    <button class="btn-primary copy-all-favorites-btn" style="margin-top: 15px;">
+                        Copy All Favs CSS
+                    </button>
+                </div>
+            `;
         }
 
         function createFontCard(font, index) {
@@ -2244,6 +2278,69 @@ async function detectAndShowFontVariants() {
                 favoritesBtn.style.display = 'inline-block';
             }
         }, 100);
+
+        // Handle copy all favorites CSS button click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('copy-all-favorites-btn')) {
+                copyAllFavoritesCSS();
+            }
+        });
+
+        // Function to copy all favorites CSS to clipboard
+        function copyAllFavoritesCSS() {
+            if (favorites.size === 0) {
+                alert('No favorites to copy!');
+                return;
+            }
+
+            // Get all favorite fonts from the set
+            const favoriteFontNames = Array.from(favorites);
+            
+            // Find the full font objects to get their CSS
+            const favoriteFonts = allFonts.filter(font => favoriteFontNames.includes(font.name));
+            
+            if (favoriteFonts.length === 0) {
+                alert('No favorite fonts found!');
+                return;
+            }
+
+            // Generate CSS for all favorite fonts
+            const cssOutput = favoriteFonts.map(font => {
+                return `/* ${font.name} - ${font.category} */
+@font-face {
+    font-family: '${font.name}';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(${font.files.regular}) format('woff2');
+}`;
+            }).join('\n\n');
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(cssOutput).then(() => {
+                // Show success notification
+                const notification = document.createElement('div');
+                notification.className = 'font-selection-notification';
+                notification.textContent = `✅ Copied ${favoriteFonts.length} favorite fonts CSS to clipboard!`;
+                document.body.appendChild(notification);
+                
+                // Animate and remove notification
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateY(0)';
+                }, 10);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(20px)';
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+                
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy CSS to clipboard. Please try again.');
+            });
+        }
 
         // Update fonts per page when window is resized
         window.addEventListener('resize', () => {

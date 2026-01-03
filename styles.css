@@ -976,6 +976,107 @@ body .font-category,
     color: #ff4444;
 }
 
+/* Special favorites summary card styles */
+.favorites-summary-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #ff4444;
+    position: relative;
+    overflow: hidden;
+}
+
+.favorites-summary-card::before {
+    content: "F";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    font-size: 250px;
+    font-weight: 900;
+    color: rgba(255, 68, 68, 0.08);
+    z-index: 0;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    font-family: Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorites-summary-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.favorites-summary-card .font-name {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #ff4444 !important;
+    margin-bottom: 15px !important;
+    text-align: center !important;
+}
+
+.favorites-list-simple {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: rgba(255, 68, 68, 0.05);
+    border-radius: 6px;
+    border: 1px dashed #ff4444;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    word-break: break-word;
+    user-select: text;
+    cursor: text;
+    min-height: 40px;
+}
+
+.copy-all-favorites-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #ff4444;
+    border: none;
+}
+
+.copy-all-favorites-btn:hover {
+    background-color: #e63838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+.dark-theme .favorites-summary-card {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-left: 4px solid #ff6b6b;
+}
+
+.dark-theme .favorites-summary-card::before {
+    color: rgba(255, 107, 107, 0.06);
+}
+
+.dark-theme .favorites-summary-card .font-name {
+    color: #ff6b6b !important;
+}
+
+.dark-theme .favorites-list-simple {
+    background-color: rgba(255, 107, 107, 0.05);
+    border-color: #ff6b6b;
+    color: #f5f5f5;
+}
+
+.dark-theme .copy-all-favorites-btn {
+    background-color: #ff6b6b;
+}
+
+.dark-theme .copy-all-favorites-btn:hover {
+    background-color: #ff5a5a;
+}
+
 .favorite-heart:hover {
     transform: scale(1.2);
 }

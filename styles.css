@@ -1073,7 +1073,7 @@ body .font-category,
 
 /* Ensure all cards have same height and buttons at bottom */
 .font-card {
-    min-height: 220px;
+    min-height: 280px; /* Unified min-height for all cards */
 }
 
 .font-card-content {
@@ -1402,3 +1402,167 @@ body .font-category,
         font-size: 12px;
     }
 }
+
+/* Mobile-specific fixes for font display */
+@media (max-width: 768px) {
+    /* Fix for Serif category - handle longer font names */
+    .font-card[data-font-category="serif"] .font-name {
+        font-size: 28px; /* Slightly smaller for Serif on mobile */
+        line-height: 1.3;
+        max-width: 90%; /* More restrictive for Serif fonts */
+    }
+    
+    /* Fix for CAPS category as well */
+    .font-card[data-font-category="caps"] .font-name {
+        font-size: 26px; /* Slightly smaller for CAPS on mobile */
+        line-height: 1.3;
+        max-width: 95%; /* Slightly more restrictive for CAPS fonts */
+    }
+}
+
+/* Additional fixes for smaller screens */
+@media (max-width: 552px) {
+    /* More aggressive fixes for very small screens */
+    .font-card .font-name {
+        font-size: 22px !important; /* Consistent smaller size for all categories */
+        line-height: 1.2 !important;
+        max-width: 85% !important; /* More restrictive for all */
+        white-space: nowrap !important; /* Prevent wrapping */
+        overflow: hidden !important; /* Hide overflow */
+        text-overflow: ellipsis !important; /* Add ellipsis */
+    }
+    
+    /* Specific adjustments for Serif and CAPS */
+    .font-card[data-font-category="serif"] .font-name {
+        max-width: 80% !important; /* Even more restrictive for Serif */
+    }
+    
+    .font-card[data-font-category="caps"] .font-name {
+        max-width: 82% !important; /* More restrictive for CAPS */
+    }
+    
+    /* Ensure font cards don't overflow on very small screens */
+    .font-card {
+        min-height: 220px !important; /* Further reduced height */
+        max-height: 260px !important; /* Prevent excessive height */
+    }
+    
+    /* Adjust font preview for small screens */
+    .font-preview {
+        font-size: 14px !important; /* Smaller preview text */
+        min-height: 60px !important; /* Reduced preview height */
+    }
+    
+    /* Ensure cards fit in small screens */
+    .fonts-grid {
+        grid-template-columns: 1fr !important; /* Single column on very small screens */
+        gap: 15px !important; /* Reduced gap */
+    }
+}
+
+/* Even more aggressive fixes for very small screens (474px and below) */
+@media (max-width: 474px) {
+    .font-card .font-name {
+        font-size: 20px !important; /* Even smaller */
+        max-width: 80% !important; /* More restrictive */
+    }
+    
+    .font-card[data-font-category="caps"] .font-name {
+        max-width: 78% !important; /* Even more restrictive for CAPS */
+    }
+    
+    .font-card {
+        min-height: 200px !important; /* Further reduced */
+        max-height: 240px !important;
+    }
+    
+    .font-preview {
+        font-size: 13px !important;
+        min-height: 50px !important;
+    }
+}
+
+/* Additional fixes for 442px screens (specific issue with Serif/page 3) */
+@media (max-width: 442px) {
+    .font-card .font-name {
+        font-size: 19px !important;
+        max-width: 78% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    .font-card[data-font-category="serif"] .font-name {
+        max-width: 73% !important; /* More restrictive for Serif at 442px */
+    }
+    
+    .font-card[data-font-category="caps"] .font-name {
+        max-width: 76% !important; /* More restrictive for CAPS at 442px */
+    }
+    
+    .font-card {
+        min-height: 195px !important;
+        max-height: 235px !important;
+    }
+    
+    .font-preview {
+        font-size: 12.5px !important;
+        min-height: 43px !important;
+    }
+}
+
+/* Additional fixes for 436px screens (specific issue with Serif/page 3) */
+@media (max-width: 436px) {
+    .font-card .font-name {
+        font-size: 20px !important;
+        max-width: 80% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    .font-card[data-font-category="serif"] .font-name {
+        max-width: 75% !important; /* More restrictive for Serif at 436px */
+    }
+    
+    .font-card[data-font-category="caps"] .font-name {
+        max-width: 78% !important; /* More restrictive for CAPS at 436px */
+    }
+    
+    .font-card {
+        min-height: 200px !important;
+        max-height: 240px !important;
+    }
+    
+    .font-preview {
+        font-size: 13px !important;
+        min-height: 45px !important;
+    }
+}
+
+/* Extremely aggressive fixes for tiny screens (374px and below) */
+@media (max-width: 374px) {
+    .font-card .font-name {
+        font-size: 18px !important; /* Smallest size */
+        max-width: 75% !important; /* Most restrictive */
+    }
+    
+    .font-card[data-font-category="caps"] .font-name {
+        max-width: 72% !important; /* Most restrictive for CAPS */
+    }
+    
+    .font-card {
+        min-height: 180px !important; /* Smallest height */
+        max-height: 220px !important;
+    }
+    
+    .font-preview {
+        font-size: 12px !important;
+        min-height: 40px !important;
+    }
+    
+    .fonts-grid {
+        gap: 10px !important; /* Smallest gap */
+    }
+}
+

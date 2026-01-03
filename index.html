@@ -72,6 +72,10 @@
                         title="Type to search, press ESC to clear, click outside to reset">
                     <button id="clear-search" title="Clear search (or press ESC)">×</button>
                 </div>
+                <div class="search-controls">
+                    <button id="global-card-size-btn" class="category-btn" title="Increase all card text sizes">16px</button>
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark/light theme">🌓</button>
+                </div>
             </div>
 
             <div class="font-categories">
@@ -83,8 +87,6 @@
                 <button class="category-btn" data-category="monospace">Monospace</button>
                 <button class="category-btn" data-category="caps">CAPS</button>
                 <button class="category-btn" data-category="favorites">❤️ Favs</button>
-                <button id="global-card-size-btn" class="category-btn" title="Increase all card text sizes">16px</button>
-                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark/light theme">🌓</button>
             </div>
 
             <div class="preview-text-input">
@@ -117,9 +119,22 @@
         let currentCategory = 'all';
         let previewText = "Gloire à l'été brûlant, à l'hiver glacé : voilà deux saisons bien différentes ! Être 123 Éléphants, ou 456 Ève ?";
         let currentPage = 1;
-        const fontsPerPage = 21; // Number of fonts to display per page (7x3 grid = 21)
+        // Dynamic fonts per page based on screen size
+        let fontsPerPage = getFontsPerPage();
         const favorites = new Set(); // Store favorite fonts
         let isDarkTheme = false; // Track dark theme state
+
+        // Function to determine fonts per page based on screen width
+        function getFontsPerPage() {
+            const screenWidth = window.innerWidth;
+            if (screenWidth >= 1200) {
+                return 21; // Large desktop: 3 columns, 21 fonts per page
+            } else if (screenWidth >= 769) {
+                return 18; // Medium screen: 2-3 columns, 18 fonts per page
+            } else {
+                return 15; // Mobile: 1 column, 15 fonts per page
+            }
+        }
 
         // DOM elements (will be initialized when DOM is ready)
         let fontsContainer, themeToggleBtn, fontSearch, previewTextInput, categoryButtons, clearSearchBtn;
@@ -1129,6 +1144,34 @@
                     return false;
                 }
 
+                // Exclude CAPS fonts from non-CAPS categories to maintain visual consistency
+                if (currentCategory !== 'all' && currentCategory !== 'caps' && currentCategory !== 'favorites') {
+                    // Check if font is a CAPS font using the same logic as the caps category
+                    const trulyAllCaps = [
+                        'Aboreto', 'Alegreya SC', 'Alegreya Sans SC', 'Almendra SC',
+                        'Amatic SC', 'Bowlby One SC', 'Bruno Ace SC',
+                        'Carrois Gothic SC', 'Cormorant SC', 'Diplomata SC',
+                        'Encode Sans SC', 'Graduate', 'Holtwood One SC',
+                        'IM Fell DW Pica SC', 'IM Fell Double Pica SC', 'IM Fell English SC',
+                        'IM Fell French Canon SC', 'IM Fell Great Primer SC', 'Marcellus SC',
+                        'Mate SC', 'Monoton', 'Overlock SC', 'Patrick Hand SC', 'Playfair Display SC',
+                        'Six Caps', 'Spectral SC', 'Shojumaru', 'Vollkorn SC', 'Ysabeau SC'
+                    ];
+
+                    const hasSCorCaps = /\b(SC|Caps)\b/i.test(font.name);
+                    const scExceptions = [
+                        'Noto Sans SC', 'Noto Serif SC',
+                        'Macondo Swash Caps', 'Oleo Script Swash Caps',
+                        'Bilbo Swash Caps', 'Delius Swash Caps', 'Elsie Swash Caps'
+                    ];
+
+                    const isSCFont = hasSCorCaps && !scExceptions.includes(font.name);
+
+                    if (trulyAllCaps.includes(font.name) || isSCFont) {
+                        return false; // Exclude CAPS fonts from non-CAPS categories
+                    }
+                }
+
                 // Filter by search term
                 if (searchTerm && !font.name.toLowerCase().includes(searchTerm)) {
                     return false;
@@ -1250,6 +1293,8 @@
                 if (currentPage > 1) {
                     currentPage--;
                     displayFonts();
+                    // Scroll to top after page change
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             });
             paginationContainer.appendChild(prevButton);
@@ -1270,6 +1315,8 @@
                 if (currentPage < totalPages) {
                     currentPage++;
                     displayFonts();
+                    // Scroll to top after page change
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             });
             paginationContainer.appendChild(nextButton);
@@ -2071,7 +2118,7 @@ async function detectAndShowFontVariants() {
                         switch(weight) {
                             case 100: weightNames.push('Thin (100)'); break;
                             case 200: weightNames.push('Extra Light (200)'); break;
-                            case 300: weightNames.push('Light (303)'); break;
+                            case 300: weightNames.push('Light (300)'); break;
                             case 400: weightNames.push('Regular (400)'); break;
                             case 500: weightNames.push('Medium (500)'); break;
                             case 600: weightNames.push('SemiBold (600)'); break;
@@ -2184,8 +2231,10 @@ async function detectAndShowFontVariants() {
         // Also call it immediately in case DOM is already loaded
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             init();
+            loadAndCacheFontData();
             loadFavorites();
             loadThemePreference();
+            enhanceTooltips();
         }
 
         // Force show favorites button for testing (remove this later)
@@ -2195,6 +2244,19 @@ async function detectAndShowFontVariants() {
                 favoritesBtn.style.display = 'inline-block';
             }
         }, 100);
+
+        // Update fonts per page when window is resized
+        window.addEventListener('resize', () => {
+            const newFontsPerPage = getFontsPerPage();
+            if (newFontsPerPage !== fontsPerPage) {
+                fontsPerPage = newFontsPerPage;
+                // Reset to page 1 when changing page size to avoid empty pages
+                currentPage = 1;
+                if (allFonts.length > 0) {
+                    displayFonts();
+                }
+            }
+        });
     </script>
     
     <!-- Footer Disclaimer -->

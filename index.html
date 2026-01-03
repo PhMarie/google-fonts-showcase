@@ -1102,16 +1102,27 @@
             }
             // Extract actual search term (remove category prefix if present)
             const fullSearchValue = fontSearch.value;
-            let searchTerm = fullSearchValue.toLowerCase().trim();
+            let searchTerm = '';
 
-            // Consistent prefix handling for all categories: "Search [Category]: "
-            const colonIndex = fullSearchValue.indexOf(':');
-            if (colonIndex !== -1) {
-                searchTerm = fullSearchValue.substring(colonIndex + 1).trim().toLowerCase();
+            // More robust search term extraction
+            if (fullSearchValue && fullSearchValue.trim()) {
+                const trimmedValue = fullSearchValue.trim();
+                
+                // Check if it has the expected prefix format "Search [Category]: [term]"
+                const colonIndex = trimmedValue.indexOf(':');
+                if (colonIndex !== -1 && colonIndex < trimmedValue.length - 1) {
+                    // Extract everything after the colon
+                    searchTerm = trimmedValue.substring(colonIndex + 1).trim().toLowerCase();
+                } else {
+                    // No colon found, use the entire value as search term
+                    // But remove common prefixes if present
+                    const prefixRemoved = trimmedValue.replace(/^(search\s+\w+\s*:?\s*)/i, '');
+                    searchTerm = prefixRemoved.trim().toLowerCase();
+                }
             }
 
             // Debug: log search term for troubleshooting
-            console.log('Current search term:', searchTerm, 'Full value:', fullSearchValue);
+            console.log('Extracted search term:', searchTerm, 'from full value:', fullSearchValue);
 
             // Show loading state
             fontsContainer.innerHTML = `<div class="loading">Loading fonts...</div>`;

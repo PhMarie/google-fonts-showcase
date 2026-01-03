@@ -1102,7 +1102,7 @@
             }
             // Extract actual search term (remove category prefix if present)
             const fullSearchValue = fontSearch.value;
-            let searchTerm = fullSearchValue.toLowerCase();
+            let searchTerm = fullSearchValue.toLowerCase().trim();
 
             // Consistent prefix handling for all categories: "Search [Category]: "
             const colonIndex = fullSearchValue.indexOf(':');
@@ -1110,8 +1110,12 @@
                 searchTerm = fullSearchValue.substring(colonIndex + 1).trim().toLowerCase();
             }
 
+            // Debug: log search term for troubleshooting
+            console.log('Current search term:', searchTerm, 'Full value:', fullSearchValue);
+
             // Show loading state
             fontsContainer.innerHTML = `<div class="loading">Loading fonts...</div>`;
+            console.log('displayFonts called. Current page:', currentPage, 'Category:', currentCategory, 'Search term will be extracted from:', fontSearch.value);
 
             // Filter fonts
             let filteredFonts = allFonts.filter(font => {
@@ -1309,6 +1313,7 @@
             prevButton.disabled = currentPage === 1 || totalPages <= 1;
             prevButton.addEventListener('click', () => {
                 if (currentPage > 1) {
+                    console.log('Prev page clicked. Current page:', currentPage, 'Search value:', fontSearch.value);
                     currentPage--;
                     displayFonts();
                     // Scroll to top after page change with small delay
@@ -1333,6 +1338,7 @@
             nextButton.disabled = currentPage === totalPages || totalPages <= 1;
             nextButton.addEventListener('click', () => {
                 if (currentPage < totalPages) {
+                    console.log('Next page clicked. Current page:', currentPage, 'Search value:', fontSearch.value);
                     currentPage++;
                     displayFonts();
                     // Scroll to top after page change with small delay

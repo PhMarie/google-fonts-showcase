@@ -1169,8 +1169,17 @@
                     ];
 
                     const isSCFont = hasSCorCaps && !scExceptions.includes(font.name);
+                    const isCapsFont = trulyAllCaps.includes(font.name) || isSCFont;
 
-                    return trulyAllCaps.includes(font.name) || isSCFont;
+                    // Apply search term filtering for CAPS category
+                    if (isCapsFont) {
+                        if (searchTerm) {
+                            const fontNameLower = font.name.toLowerCase();
+                            return fontNameLower.includes(searchTerm);
+                        }
+                        return true;
+                    }
+                    return false;
                 } else if (currentCategory !== 'all' && font.category !== currentCategory) {
                     return false;
                 }
